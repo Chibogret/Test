@@ -1,0 +1,17 @@
+{
+    "name": "cmsc190.test",
+    "private": true,
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "scripts": {
+      "start": "concurrently \"npm start --prefix server\" \"npm start --prefix client\"",
+      "start:server": "npm start --prefix server",
+      "start:client": "npm start --prefix client",
+      "install": "cd server && npm install && cd ../client && npm install",
+      "build": "npm run build --prefix client",
+      "test": "concurrently \"npm test --prefix server\" \"npm test --prefix client\""
+    }
+  }
+  
+  

@@ -1,25 +1,23 @@
 {
-  "name": "server",
+  "name": "cmsc190",
   "version": "1.0.0",
-  "description": "",
+  "description": "test_run",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "node index.js"
-  },
-  "keywords": [],
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" --prefix server \"npm run client\" --prefix client"
+  },  
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.24.0",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.0.12",
-    "redux": "^4.1.2",
-    "redux-thunk": "^2.4.0"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
   }
 }
