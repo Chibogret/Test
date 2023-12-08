@@ -1,22 +1,19 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  }
-  // Add other fields as needed
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+  // Add other relevant fields as needed
 });
 
-const User = mongoose.model('User', userSchema);
+// Hash password before saving
+UserSchema.pre('save', function(next) {
+  if (this.isModified('password') || this.isNew) {
+    const saltRounds = 10;
+    this.password = bcrypt.hashSync(this.password, saltRounds);
+  }
+  next();
+});
 
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);
