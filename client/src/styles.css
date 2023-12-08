@@ -1,0 +1,42 @@
+/* styles.css */
+
+
+.registration-form-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  padding-top: 20vh;
+  text-align: right;
+}
+
+.registration-form {
+  max-width: 80%;
+  width: 300px;
+  background-color: #fff;
+  border-radius: 3px;
+ 
+  padding: 20px;
+}
+
+/* Media Queries */
+
+/* For tablets and larger devices */
+@media (min-width: 768px) {
+  .registration-form-container {
+    border: none;
+    box-shadow: 0px 0px 0px 0px #000;
+  }
+
+  .registration-form {
+    max-width: 60%; /* Larger fixed width for larger screens */
+    box-shadow: 0px 0px 3px 0px #000;
+  }
+}
+
+/* For desktops and larger devices */
+@media (min-width: 1024px) {
+  .registration-form {
+    max-width: 60%; /* Even larger fixed width for desktops */
+    box-shadow: 0px 0px 3px 0px #000;
+  }
+}

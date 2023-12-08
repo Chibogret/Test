@@ -1,12 +1,16 @@
 import React from 'react';
-import './App.css';
-import Register from './pages/Register'; // Import the Register component
+import { ThemeProvider } from '@mui/material/styles';
+import Register from './pages/Register';
+import theme from './style/theme'; // Import your custom theme
+import './styles.css';
 
 function App() {
   return (
-    <div className="App">
-      <Register />
-    </div>
+    <ThemeProvider theme={theme}> {/* Apply the theme */}
+      <div className="App">
+        <Register />
+      </div>
+    </ThemeProvider>
   );
 }
 
