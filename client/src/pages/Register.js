@@ -11,12 +11,13 @@ function Register() {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-
+    const IP_ADR = process.env.REACT_APP_IP_ADR || 'localhost';
+    console.log(IP_ADR)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', { username, password });
+            const response = await axios.post(`http://${IP_ADR}:5000/api/auth/register`, { username, password });
             console.log(response.data);
             // Reset error message on successful registration
             setErrorMessage('Registration successful. Please login.');
