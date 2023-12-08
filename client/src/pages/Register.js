@@ -3,7 +3,6 @@ import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import MaterialForm from '../components/RegistrationForm';
-import { Container } from '@mui/material';
 import '../styles.css';
 
 function Register() {
@@ -11,7 +10,7 @@ function Register() {
     const [password, setPassword] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    
+
 
 
     const handleSubmit = async (e) => {
@@ -28,7 +27,7 @@ function Register() {
             setErrorMessage('Registration failed. Please try again.');
         }
     }
-    
+
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -45,13 +44,19 @@ function Register() {
                     setUsername={setUsername}
                     password={password}
                     setPassword={setPassword}
-                    />
+                />
             </div>
-            <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} // Position the Snackbar at the bottom-right
+            >
                 <Alert onClose={handleCloseSnackbar} severity="success">
                     {errorMessage && <div>{errorMessage}</div>}
                 </Alert>
             </Snackbar>
+
         </div>
     );
 }

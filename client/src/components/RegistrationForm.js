@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, Box, Container } from '@mui/material';
+import { TextField, Button, Box } from '@mui/material';
 
 function MaterialForm({ handleSubmit, username, setUsername, password, setPassword }) {
     // Common styles for TextFields
@@ -33,18 +33,19 @@ function MaterialForm({ handleSubmit, username, setUsername, password, setPasswo
                 component="div"
                 sx={{
                     display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                   
+                    marginBottom: '10px',
+                    fontWeight: 'bold',
+
                 }}
             >
-                
-            Welcome
-            <img style={{width: '150px'}}
+                {/* <img style={{width: '150px'}}
                 src={
                     process.env.PUBLIC_URL + "/logo.png"
                 }
-            />
+                alt='logo'
+            /> */}
+                Create your account
+
             </Box>
             <TextField
                 label="Email"
@@ -70,12 +71,20 @@ function MaterialForm({ handleSubmit, username, setUsername, password, setPasswo
                 fullWidth
             />
 
-            <Button type="submit" variant="contained" color="primary" style={{width:"100%", marginTop:"15px"}}>
+            <Button type="submit" variant="contained" color="primary" style={{ width: "100%", marginTop: "15px" }}>
                 Register
             </Button>
-           
+            <Button color="primary" style={{ width: "100%", marginTop: "15px", fontSize:"10px" }}>
+                Already have an account? Login
+            </Button>
+
+
         </form>
     );
 }
 
+
+
 export default MaterialForm;
+
+

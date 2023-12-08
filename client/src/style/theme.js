@@ -6,6 +6,9 @@ const theme = createTheme({
     primary: {
       main: '#E65F67', // Your primary color
     },
+    typography: {
+        FontFamily: "Lato"
+    }
     // Add other theme customizations if needed
   },
 });

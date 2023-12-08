@@ -1,42 +1,43 @@
 /* styles.css */
 
-
+/* Main Container Styles */
 .registration-form-container {
   display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center; /* Centers vertically */
-  padding-top: 20vh;
-  text-align: right;
+  justify-content: center; /* Horizontally centers the form */
+  align-items: center; /* Vertically centers the form */
+  height: 100vh;
+  text-align: right; /* Aligns text to the right */
 }
 
+/* Form Styles */
 .registration-form {
-  max-width: 80%;
-  width: 300px;
-  background-color: #fff;
-  border-radius: 3px;
- 
-  padding: 20px;
+  width: 300px; /* Fixed width for mobile devices */
+  max-width: 80%; /* Maximum width in relation to parent container */
+  background-color: #fff; /* White background for the form */
+  opacity: 0.9; /* Slightly transparent background */
+  border-radius: 3px; /* Rounded corners for the form */
+  padding: 50px 20px; /* Padding around the content */
 }
 
 /* Media Queries */
 
-/* For tablets and larger devices */
+/* For tablets and devices with a viewport width of 768px and above */
 @media (min-width: 768px) {
   .registration-form-container {
-    border: none;
-    box-shadow: 0px 0px 0px 0px #000;
+    border: none; /* No border for larger devices */
+    box-shadow: 0px 0px 0px 0px; /* Reset box-shadow */
   }
 
   .registration-form {
-    max-width: 60%; /* Larger fixed width for larger screens */
-    box-shadow: 0px 0px 3px 0px #000;
+    max-width: 60%; /* Increase maximum width for larger screens */
+    box-shadow: 2px 2px 4px 0px #E65F67; /* Subtle shadow for depth */
   }
 }
 
-/* For desktops and larger devices */
+/* For desktops and devices with a viewport width of 1024px and above */
 @media (min-width: 1024px) {
   .registration-form {
-    max-width: 60%; /* Even larger fixed width for desktops */
-    box-shadow: 0px 0px 3px 0px #000;
+    max-width: 60%; /* Consistent max-width with tablet view */
+    box-shadow: 2px 2px 4px 0px #E65F67; /* Same shadow as tablet view */
   }
 }

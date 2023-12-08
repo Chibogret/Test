@@ -3,6 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import Register from './pages/Register';
 import theme from './style/theme'; // Import your custom theme
 import './styles.css';
+import './App.css'
 
 function App() {
   return (
