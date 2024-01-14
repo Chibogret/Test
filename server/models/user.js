@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true }
   // Add other relevant fields as needed
 });
@@ -16,4 +16,4 @@ UserSchema.pre('save', function(next) {
   next();
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Users', UserSchema);
