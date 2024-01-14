@@ -11,14 +11,14 @@ function App() {
 
   const toggleForm = () => {
     setCurrentForm(currentForm === 'login' ? 'register' : 'login');
-    console.log(currentForm)
+    console.log("current form" + currentForm)
   };
 
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
         {currentForm === 'register' ? (
-          <Login onToggleForm={toggleForm} />
+          <Login onToggleForm={toggleForm} formType={currentForm} />
         ) : (
           <Register onToggleForm={toggleForm} />
         )}

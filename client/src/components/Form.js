@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import { TextField, Button, Box, CircularProgress } from '@mui/material';
 
 function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, password, setPassword, isLoading }) {
-
-    // const isLogin = formType === 'login';
     
-    const isLogin = 'login';
-
-    console.log(formType)
+    console.log("form type" + formType)
 
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -79,7 +75,7 @@ function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, p
                     fontWeight: 'bold',
                 }}
             >
-                {formType ? 'Login to your account' : 'Create your account'}
+                {formType === 'Login' ? 'Login to your account' : 'Create your account'}
             </Box>
 
             <TextField
@@ -120,15 +116,14 @@ function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, p
             <Button type="submit" variant="contained" color="primary"
                 style={{ width: "100%", marginTop: "15px" }}
                 disabled={isLoading || !isEmailValid || !isPasswordValid || emailError || passwordError}>
-                {isLoading ? <CircularProgress size={24} /> : formType ? 'Login' : 'Register'}
+                {isLoading ? <CircularProgress size={24} /> : formType === 'Login' ? "Login" : 'Register'}
             </Button>
 
-            {isLogin && (
+            
             <Button color="primary" style={{ width: "100%", marginTop: "15px", fontSize: "10px" }}
                     onClick={toggleForm}>
-                {formType ? "Don't have an account? Register here." : 'Already have an account? Login here.'}
+                {formType === 'Login' ? "Don't have an account? Register here." : 'Already have an account? Login here.'}
             </Button>
-        )}
         </form>
     );
 }

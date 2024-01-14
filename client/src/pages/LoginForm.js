@@ -18,7 +18,9 @@ function Login({ onToggleForm }) {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
+            await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
+            // const response = await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
+            
             // Handle login success, e.g., redirect, store tokens, etc.
             setErrorMessage('Login successful.');
             setOpenSnackbar(true);
@@ -48,6 +50,7 @@ function Login({ onToggleForm }) {
                 setPassword={setPassword}
                 isLoading={isLoading}
                 onToggleForm={onToggleForm} // Pass the onToggleForm to MaterialForm
+                formType={'Login'} // Pass the formType to MaterialForm
                 // Remove formType if it's not used
             />
             <Snackbar
