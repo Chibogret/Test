@@ -4,6 +4,7 @@ import { TextField, Button, Box, CircularProgress } from '@mui/material';
 function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, password, setPassword, isLoading }) {
     
     console.log("form type" + formType)
+    console.log(localStorage.getItem('token'))
 
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -38,6 +39,7 @@ function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, p
     };
 
     const toggleForm = () => {
+        // console.log(typeof onToggleForm);
         onToggleForm(); // Use onToggleForm passed as prop
     };
     // Styles

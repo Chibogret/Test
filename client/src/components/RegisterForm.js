@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import MaterialForm from '../components/Form'; // Assume LoginForm is similar to RegistrationForm but for login
+import MaterialForm from './Form';
 import '../styles.css';
 
-function Login({ onToggleForm }) {
+function Register({ onToggleForm, formType }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -14,19 +14,27 @@ function Login({ onToggleForm }) {
 
     const IP_ADR = process.env.REACT_APP_IP_ADR;
 
+    const emailRegex = new RegExp("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$");
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!emailRegex.test(email)) {
+            setErrorMessage('Invalid email format');
+            setOpenSnackbar(true);
+            return;
+        }
         setIsLoading(true);
         try {
-            await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
-            // const response = await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
-            
-            // Handle login success, e.g., redirect, store tokens, etc.
-            setErrorMessage('Login successful.');
+            await axios.post(`http://${IP_ADR}:5000/api/auth/register`, { email, password });
+            setErrorMessage('Registration successful. Please login.');
             setOpenSnackbar(true);
-            // Redirect or further actions here
         } catch (error) {
-            setErrorMessage(error.response.data.message || 'Login failed. Please try again.');
+            if (error.response.data.message.includes('duplicate key error')) {
+                setErrorMessage('Account already registered');
+            } else {
+                setErrorMessage(error.response.data.message || 'Registration failed. Please try again.');
+            }
+            
             setOpenSnackbar(true);
         } finally {
             setIsLoading(false);
@@ -49,9 +57,8 @@ function Login({ onToggleForm }) {
                 password={password}
                 setPassword={setPassword}
                 isLoading={isLoading}
-                onToggleForm={onToggleForm} // Pass the onToggleForm to MaterialForm
-                formType={'Login'} // Pass the formType to MaterialForm
-                // Remove formType if it's not used
+                formType="register"
+                onToggleForm={onToggleForm}
             />
             <Snackbar
                 open={openSnackbar}
@@ -59,7 +66,7 @@ function Login({ onToggleForm }) {
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert onClose={handleCloseSnackbar} severity={errorMessage.startsWith('Login successful') ? "success" : "error"}>
+                <Alert onClose={handleCloseSnackbar} severity={errorMessage.startsWith('Registration successful') ? "success" : "error"}>
                     {errorMessage}
                 </Alert>
             </Snackbar>
@@ -67,4 +74,4 @@ function Login({ onToggleForm }) {
     );
 }
 
-export default Login;
+export default Register;

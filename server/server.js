@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes'); // Import the user routes
 const cors = require('cors');
+const path = require('path'); // Import path if you're using it in production
 
 const app = express();
 
@@ -16,6 +18,9 @@ app.use(express.json());
 
 // Use the Auth Routes
 app.use('/api/auth', authRoutes);
+
+// Use the User Routes
+app.use('/api', userRoutes); // Use the user routes with a base path
 
 const PORT = process.env.PORT || 5000;
 
@@ -32,4 +37,3 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(PORT, '0.0.0.0', () => console.log(`Server started on port ${PORT}`));
-

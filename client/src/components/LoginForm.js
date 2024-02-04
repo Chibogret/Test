@@ -1,45 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import MaterialForm from '../components/Form';
+import { AuthContext } from '../auth/AuthProvider'; // Assuming this is the path to your AuthContext
 import '../styles.css';
 
-function Register({ onToggleForm, formType }) {
+function Login({ onToggleForm }) {
+    const { login } = useContext(AuthContext); // Use the login function from AuthContext
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
+    const navigate = useNavigate();
     const IP_ADR = process.env.REACT_APP_IP_ADR;
-
-    const emailRegex = new RegExp("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!emailRegex.test(email)) {
-            setErrorMessage('Invalid email format');
-            setOpenSnackbar(true);
-            return;
-        }
         setIsLoading(true);
         try {
-            await axios.post(`http://${IP_ADR}:5000/api/auth/register`, { email, password });
-            setErrorMessage('Registration successful. Please login.');
+            const response = await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
+
+            // Assuming the response includes the token and user data
+            const { token, userData } = response.data;
+            localStorage.setItem('token', token); // Store the token
+            login(userData, token); // Update the authentication state
+
+            setErrorMessage('Login successful.');
             setOpenSnackbar(true);
+            navigate('/home'); // Redirect to the profile page
         } catch (error) {
-            if (error.response.data.message.includes('duplicate key error')) {
-                setErrorMessage('Account already registered');
-            } else {
-                setErrorMessage(error.response.data.message || 'Registration failed. Please try again.');
-            }
-            
+            setErrorMessage(error.response?.data.message || 'Login failed. Please try again.');
             setOpenSnackbar(true);
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -57,8 +55,8 @@ function Register({ onToggleForm, formType }) {
                 password={password}
                 setPassword={setPassword}
                 isLoading={isLoading}
-                formType="register"
                 onToggleForm={onToggleForm}
+                formType={'Login'}
             />
             <Snackbar
                 open={openSnackbar}
@@ -66,7 +64,7 @@ function Register({ onToggleForm, formType }) {
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert onClose={handleCloseSnackbar} severity={errorMessage.startsWith('Registration successful') ? "success" : "error"}>
+                <Alert onClose={handleCloseSnackbar} severity={errorMessage.startsWith('Login successful') ? "success" : "error"}>
                     {errorMessage}
                 </Alert>
             </Snackbar>
@@ -74,4 +72,4 @@ function Register({ onToggleForm, formType }) {
     );
 }
 
-export default Register;
+export default Login;
