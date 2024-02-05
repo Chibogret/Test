@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { AuthContext } from '../auth/AuthProvider';
+import Tracklist from '../components/TrackList';
+import Navbar from '../components/Navbar'; // Import the Navbar component
+
 
 function UserProfile() {
-  const { user, token } = useContext(AuthContext); // Assuming AuthContext provides the user token
   const [email, setEmail] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [message, setMessage] = useState('');
@@ -20,16 +21,14 @@ function UserProfile() {
         setOpenSnackbar(true);
         return;
       }
-  
+
       try {
         const response = await axios.get(`http://${IP_ADR}:5000/api/home`, {
           headers: {
-            'Authorization': `Bearer ${token}` // Sending token in the Authorization header
-          }
+            'Authorization': `Bearer ${token}`, // Sending token in the Authorization header
+          },
         });
-        console.log(response)
         setEmail(response.data.email);
-        console.log(email)
         setMessage('Profile fetched successfully.');
         setOpenSnackbar(true);
       } catch (err) {
@@ -38,10 +37,10 @@ function UserProfile() {
         setOpenSnackbar(true);
       }
     };
-  
+
     fetchProfile();
-  }, []); // Removed user.id and token dependencies since they are not used directly in the hook
-  
+  }, []); // No dependencies needed as localStorage access doesn't rely on component re-render
+
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -49,10 +48,22 @@ function UserProfile() {
     setOpenSnackbar(false);
   };
 
+  
   return (
-    <div className="user-profile-container">
-      <h1>User Profile</h1>
-      <p>Email: {email}</p>
+    <div>
+      <div className='app-bar'>
+      <Navbar /> {/* Use the Navbar component */}
+
+      </div>
+      
+      <div className="user-profile-container">
+        
+      <div className='home-tracklist'>
+        <Tracklist />
+      </div>
+      <div className='main-content'>
+        <p>Email: {email}</p>
+      </div>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
@@ -63,7 +74,10 @@ function UserProfile() {
           {message}
         </Alert>
       </Snackbar>
+    
     </div>
+    </div>
+    
   );
 }
 

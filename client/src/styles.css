@@ -41,3 +41,45 @@
     box-shadow: 2px 2px 4px 0px #E65F67; /* Same shadow as tablet view */
   }
 }
+
+.app-bar {display: flex;
+  margin-bottom: 64px;
+}
+
+
+.home-tracklist {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  padding: 20px;
+  border-radius: 5px;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: right;
+  padding-left: 0; /* Adjust for mobile, no sidebar initially visible */
+}
+
+/* Toggle class for showing the sidebar */
+.home-tracklist.active {
+  transform: translateX(0);
+}
+
+/* Media query for larger screens */
+
+.home-tracklist {
+  position: fixed;
+  transform: translateX(-100%); /* Always visible on larger screens */
+}
+
+

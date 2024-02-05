@@ -1,5 +1,13 @@
 .App {
-  text-align: center;
+  display: flex; /* Enables flexbox layout */
+  flex-direction: row; /* Aligns children (sidebar and main content) horizontally */
+  align-items: flex-start; /* Aligns items at the start of the container */
+  justify-content: center; /* Centers the main content */
+  height: 100vh;
+  max-width: 1920px;
+  margin: auto; /* Centers the .App container itself */
+  position: relative; /* For positioning child elements */
+  padding: 20px; /* Optional: Adds padding inside the .App container */
 }
 
 .App-header {
