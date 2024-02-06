@@ -42,12 +42,15 @@
   }
 }
 
-.app-bar {display: flex;
+.app-bar {
+  display: flex;
   margin-bottom: 64px;
+  z-index: 10;
 }
 
 
 .home-tracklist {
+  z-index: 10;
   background-color: white;
   position: absolute;
   top: 60px;
@@ -100,4 +103,23 @@
   text-align: left;
   border-radius: 0px;
   border-bottom: 2px solid black; /* Adds a 2px solid black bottom border */
+}
+
+
+/* Main Content Components */
+
+.main-content .map {
+  overflow: auto;
+  border-radius: 10px;
+  z-index: 1;
+  height: 60vh; /* Adjust height as needed */
+  width: 100vw; /* Default to full viewport width on smaller screens */
+  /* position: relative; is usually needed for Leaflet's map container or similar */
+}
+
+/* Use a media query to apply styles for larger screens */
+@media (min-width: 768px) { /* Adjust the breakpoint as needed */
+  .main-content .map {
+    width: 90vw; /* Use viewport height as width on larger screens */
+  }
 }
