@@ -5,24 +5,11 @@ import Alert from '@mui/material/Alert';
 import Tracklist from '../components/TrackList';
 import Navbar from '../components/Navbar'; // Assuming you have this component
 import MapComponent from '../components/MapComponent'; // Import the MapComponent
+import DetailsComponent from '../components/DetailsSection'; // Import the DetailsComponent
+import { municipalities } from '../config/municipalitiesConfig'; // Adjust the path as needed
 
-const municipalities = [
-  { id: '1', name: 'Puerto Galera', coords: [13.494839, 120.955457] },
-  { id: '2', name: 'San Teodoro', coords: [13.1981, 121.4163]},
-  { id: '3', name: 'Baco', coords: [13.357614, 121.097109] },
-  { id: '4', name: 'Calapan City', coords: [13.4067, 121.1744]},
-  { id: '5', name: 'Naujan', coords: [13.3304, 121.3405] },
-  { id: '6', name: 'Victoria', coords: [13.2483, 121.1919] },
-  { id: '7', name: 'Socorro', coords: [12.9519, 121.3963] },
-  { id: '8', name: 'Pinamalayan', coords: [13.0425, 121.5648] },
-  { id: '9', name: 'Gloria', coords: [13.1981, 121.4163] },
-  { id: '10', name: 'Bansud', coords: [13.1981, 121.4163] },
-  { id: '11', name: 'Bongabong', coords: [12.9522, 121.3613] },
-  { id: '12', name: 'Roxas', coords: [12.5781, 122.2708]},
-  { id: '13', name: 'Mansalay', coords: [12.5825, 121.3963]},
-  { id: '14', name: 'Bulalacao', coords: [12.5825, 121.3963]}
-  // Add more municipalities as needed
-];
+
+
 
 const statuses = {
   '1': 1, // Status for Puerto Galera
@@ -84,6 +71,44 @@ function UserProfile() {
     setOpenSnackbar(false);
   };
 
+  const [selectedMunicipality, setSelectedMunicipality] = useState(null);
+
+  // Function to handle municipality selection, to be passed to MapComponent
+  const handleMunicipalitySelect = (municipalityId) => {
+    const municipality = municipalities.find(m => m.id === municipalityId);
+    const status = statuses[municipalityId];
+    setSelectedMunicipality({ ...municipality, status });
+  };
+
+  const placeholderOrderDetails = {
+    dateIssued: 'July 15, 2024',
+    timeIssued: '14:00',
+    controlNumbers: {
+      rasAsf: '23023 - 229',
+      aic: 'S2023 - 317'
+    },
+    deliveryStatus: [
+      { description: 'Checking', date: 'Jan 24', state: 'checking' },
+      { description: 'In Transit', date: 'Jan 25', state: 'inTransit' },
+      { description: 'Delivering', date: 'Jan 26', state: 'delivering' }
+    ],
+    timeline: [
+      { name: 'BANSUD', status: 'completed', time: '6:25pm' },
+      { name: 'GLORIA', status: 'completed', time: '6:25pm' },
+      { name: 'PINAMALAYAN', status: 'current', time: '6:25pm' },
+      { name: 'NAUJAN', status: 'pending', time: '6:25pm' },
+      { name: 'CALAPAN', status: 'pending', time: '6:25pm' }
+    ]
+  };
+
+  const placeholderSelectedMunicipality = {
+    id: '1',
+    name: 'Puerto Galera',
+    coords: [13.494839, 120.955457],
+    status: 1 // Assuming 1 represents an 'active' status
+  };
+
+
   return (
     <div>
       <div className='app-bar'>
@@ -98,7 +123,15 @@ function UserProfile() {
           <div className='map'>
             {/* Here, we replace the email display with the MapComponent */}
             <MapComponent municipalities={municipalities} statuses={statuses} />
+
           </div>
+          <div>
+            <DetailsComponent
+            selectedMunicipality={placeholderSelectedMunicipality}
+            orderDetails={placeholderOrderDetails}
+          />
+          </div>
+          
         </div>
         <Snackbar
           open={openSnackbar}

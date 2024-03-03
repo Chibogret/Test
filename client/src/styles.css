@@ -123,3 +123,154 @@
     width: 90vw; /* Use viewport height as width on larger screens */
   }
 }
+
+
+
+.details-container {
+  width: 90vw;
+  max-height: 40vh;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 3fr 2fr 1fr; /* Default to two columns */
+  gap: 10px;
+  background: #fff;
+  font-family: 'Arial', sans-serif;
+  padding-top: 20px;
+}
+
+/* Media query for screens smaller than 768px */
+@media (max-width: 768px) {
+  .details-container {
+    /* Adjust to a single column for mobile */
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+.details-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr; /* Three columns by default */
+  padding: 10px;
+  gap: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.delivery-status {
+  border: 1px solid #ddd;
+}
+/* Styles for individual elements */
+.order-details, .vehicle-details, .delivery-status {
+  
+  padding: 15px;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.delivery-timeline {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: left;
+}
+
+/* Media query for PC screens */
+@media screen and (min-width: 1024px) {
+  .delivery-timeline {
+    max-height: 100%; /* Example max height */
+    overflow-y: auto; /* Enable scrolling if content exceeds max height */
+  }
+}
+
+
+/* Media query for screens smaller than 768px */
+@media (max-width: 1024px) {
+  .details-header {
+    /* Adjust to a single column for mobile */
+    grid-template-columns: 1fr;
+  }
+}
+
+.details-container h3 {
+  text-align: left;
+  font-weight: bold;
+}
+
+.details-header h3 {
+  padding: 5px;
+}
+
+h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.delivery-status p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.order-details p {
+  display: flex;
+  justify-content: space-between;
+  margin: 2px;
+  font-size: 1em;
+  color: #666;
+}
+
+.qr-code {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Adjust the space between items */
+  padding-top: 10px;
+  flex: 1 1 100%;
+  height: 75%;
+}
+
+/* Media query for screens smaller than 768px */
+
+  .qr-code > * {
+    flex: 1 1 100%; /* Each item takes full width in smaller screens */
+  }
+
+
+.qr-code p {
+  margin-top: 0px; /* Adjust spacing as needed */
+  text-align: center;
+}
+
+.qr-box {
+  text-align: center;
+}
+
+/* Adjust text alignment for mobile */
+@media screen and (max-width: 1024px) {
+  .qr-box {
+    text-align: center; /* Center-align in one-column layout */
+  }
+}
+
+.qr-code canvas {
+  border: 1px solid #ddd;
+}
+
+
+.warning-section {
+  text-align: start;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: left;
+  color: #666;
+}
+

@@ -19,6 +19,7 @@ function Tracklist() {
     <div className='sidebar' style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       {/* Register Button */}
       <Button className="registerButton">Register shipment</Button>
+      <Button className="registerButton" style={{border:"none"}}>Tracking shipment</Button>
       {tracks.map((track) => (
         <Card key={track.id} variant="outlined">
           <CardActionArea>
