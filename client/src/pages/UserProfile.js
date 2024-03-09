@@ -108,6 +108,19 @@ function UserProfile() {
     status: 1 // Assuming 1 represents an 'active' status
   };
 
+  const dynamicStatuses = placeholderOrderDetails.timeline.reduce((acc, current) => {
+    // Assign 2 for 'current', 1 for 'completed', and 0 for any other status
+    if (current.status === 'current') {
+      acc[current.name.toUpperCase()] = 2;
+    } else if (current.status === 'completed') {
+      acc[current.name.toUpperCase()] = 1;
+    } else {
+      acc[current.name.toUpperCase()] = 0;
+    }
+    return acc;
+  }, {});
+  
+
 
   return (
     <div>
@@ -122,7 +135,7 @@ function UserProfile() {
         <div className='main-content'>
           <div className='map'>
             {/* Here, we replace the email display with the MapComponent */}
-            <MapComponent municipalities={municipalities} statuses={statuses} />
+            <MapComponent municipalities={municipalities} statuses={dynamicStatuses} />
 
           </div>
           <div>

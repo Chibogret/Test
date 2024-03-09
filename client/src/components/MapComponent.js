@@ -9,13 +9,19 @@ function MapComponent({ municipalities, statuses }) {
   ];
 
   // Function to determine fill color based on status
-  const getFillColor = (status) => status === 1 ? "#E65F67" : "#808080"; // Primary color or gray
+  const getFillColor = (status) => {
+    switch(status) {
+      case 1: // Active
+        return "#E65F67"; // Primary color
+      case 2: // Current
+        return "#4CAF50"; // Green color to indicate current status
+      default: // Inactive or other
+        return "#808080"; // Gray
+    }
+  };
 
-  // Function to determine border color based on status
-  const getBorderColor = (status) => status === 1 ? "#b0b0b0" : "#b0b0b0"; // Black or light gray
-
-  // Function to determine border width based on status
-  const getBorderWidth = (status) => status === 1 ? 2 : 1; // Thicker border for status 1
+  const borderColor = "#b0b0b0"; // Light gray for all statuses
+  const borderWidth = (status) => status === 1 || status === 2 ? 3 : 1; // Thicker border for active or current
 
   return (
     <MapContainer
@@ -30,20 +36,23 @@ function MapComponent({ municipalities, statuses }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      {municipalities.map((municipality) => (
-        <CircleMarker
-          key={municipality.id}
-          center={municipality.coords}
-          radius={15}
-          fillColor={getFillColor(statuses[municipality.id])} // Fill color based on status
-          color={getBorderColor(statuses[municipality.id])} // Border color based on status
-          weight={getBorderWidth(statuses[municipality.id])} // Border width based on status
-          opacity={1}
-          fillOpacity={0.8}
-        >
-          <Popup>{municipality.name}</Popup>
-        </CircleMarker>
-      ))}
+      {municipalities.map((municipality) => {
+        const status = statuses[municipality.name.toUpperCase()]; // Access status using municipality name
+        return (
+          <CircleMarker
+            key={municipality.id}
+            center={municipality.coords}
+            radius={15}
+            fillColor={getFillColor(status)} // Fill color based on status
+            color={borderColor} // Consistent border color for simplicity
+            weight={borderWidth(status)} // Border width based on status
+            opacity={1}
+            fillOpacity={0.8}
+          >
+            <Popup>{municipality.name}</Popup>
+          </CircleMarker>
+        );
+      })}
     </MapContainer>
   );
 }
