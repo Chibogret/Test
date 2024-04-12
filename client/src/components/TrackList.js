@@ -1,34 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, Button } from '@mui/material';
+import { Button, CardActionArea } from '@mui/material';
+import ShipmentModal from './ShipmentModal'; // Adjust the path as necessary
 import '../styles.css';
 
+// orderDetailsList and onSelectShipment are passed as props to Tracklist
+function Tracklist({ orderDetailsList, onSelectShipment }) {
+  const [open, setOpen] = useState(false);
 
-const tracks = [
-  { id: 1, name: 'Track 1', artist: 'Artist 1' },
-  { id: 2, name: 'Track 2', artist: 'Artist 2' },
-  // Add more tracks as needed
-];
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-
-function Tracklist() {
+  // Function to handle selection of a shipment
+  const handleSelectShipment = (shipment) => {
+    onSelectShipment(shipment); // Call the function passed from the parent component
+  };
 
   return (
-    <div className='sidebar' style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      {/* Register Button */}
-      <Button className="registerButton">Register shipment</Button>
+    <div className='sidebar' style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
+      <Button className="registerButton" onClick={handleOpen}>Register shipment</Button>
+      <ShipmentModal open={open} handleClose={handleClose} />
       <Button className="registerButton" style={{border:"none"}}>Tracking shipment</Button>
-      {tracks.map((track) => (
-        <Card key={track.id} variant="outlined">
+      {orderDetailsList.map((orderDetails, index) => (
+        <Card 
+          key={index} 
+          variant="outlined" 
+          onClick={() => handleSelectShipment(orderDetails)} 
+          style={{ marginBottom: '10px' }}
+        >
           <CardActionArea>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                {track.name}
+                Shipment Number: {orderDetails.shipmentNumber}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {track.artist}
+                Date: {orderDetails.dateIssued}
               </Typography>
             </CardContent>
           </CardActionArea>

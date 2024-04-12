@@ -53,7 +53,7 @@
   z-index: 10;
   background-color: white;
   position: absolute;
-  top: 60px;
+  top: 55px;
   left: 0;
   width: 270px;
   height: 100vh;
@@ -62,7 +62,9 @@
   overflow-y: auto;
   transition: transform 0.3s ease;
   transform: translateX(-100%);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 }
+
 
 .main-content {
 
@@ -86,6 +88,7 @@
   position: fixed;
   transform: translateX(-100%); /* Always visible on larger screens */
 }
+
 
 
 

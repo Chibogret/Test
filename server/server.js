@@ -2,9 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes'); // Import the user routes
+const userRoutes = require('./routes/userRoutes');
+const shipmentRoutes = require('./routes/shipmentRoutes') // Import the shipment routes
 const cors = require('cors');
-const path = require('path'); // Import path if you're using it in production
+const path = require('path');
 
 const app = express();
 
@@ -20,7 +21,10 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 
 // Use the User Routes
-app.use('/api', userRoutes); // Use the user routes with a base path
+app.use('/api', userRoutes); // Update this to include '/users' to differentiate from other routes
+
+// Use the Shipment Routes
+app.use('/api/shipments', shipmentRoutes);
 
 const PORT = process.env.PORT || 5000;
 

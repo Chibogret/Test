@@ -8,29 +8,57 @@ import MapComponent from '../components/MapComponent'; // Import the MapComponen
 import DetailsComponent from '../components/DetailsSection'; // Import the DetailsComponent
 import { municipalities } from '../config/municipalitiesConfig'; // Adjust the path as needed
 
+// const placeholderOrderDetailsList = [
+//   {
+//     orderId: 1,
+//     dateIssued: 'July 15, 2024',
+//     timeIssued: '14:00',
+//     controlNumbers: {
+//       rasAsf: '23023 - 229',
+//       aic: 'S2023 - 317'
+//     },
+//     deliveryStatus: [
+//       { description: 'Checking', date: 'Jan 24', state: 'checking' },
+//       { description: 'In Transit', date: 'Jan 25', state: 'inTransit' },
+//       { description: 'Delivering', date: 'Jan 26', state: 'delivering' }
+//     ],
+//     timeline: [
+//       { name: 'BANSUD', status: 'completed', time: '6:25pm' },
+//       { name: 'GLORIA', status: 'completed', time: '6:25pm' },
+//       { name: 'PINAMALAYAN', status: 'current', time: '6:25pm' },
+//       { name: 'NAUJAN', status: 'pending', time: '6:25pm' },
+//       { name: 'CALAPAN', status: 'pending', time: '6:25pm' }
+//     ]
+//   },
+//   // Duplicate and modify for another order
+//   {
+//     orderId: 2,
+//     dateIssued: 'July 20, 2024',
+//     timeIssued: '10:00',
+//     controlNumbers: {
+//       rasAsf: '24024 - 330',
+//       aic: 'S2024 - 418'
+//     },
+//     deliveryStatus: [
+//       { description: 'Preparing', date: 'July 21', state: 'preparing' },
+//       { description: 'In Transit', date: 'July 22', state: 'inTransit' },
+//       { description: 'Delivered', date: 'July 23', state: 'delivered' }
+//     ],
+//     timeline: [
+//       { name: 'SABLAYAN', status: 'completed', time: '2:15pm' },
+//       { name: 'SAN JOSE', status: 'completed', time: '3:00pm' },
+//       { name: 'MAGSAYSAY', status: 'current', time: '4:45pm' },
+//       { name: 'CALINTAAN', status: 'pending', time: 'Expected 5:30pm' },
+//       { name: 'RIZAL', status: 'pending', time: 'Expected 6:00pm' }
+//     ]
+//   },
+//   // Add more orders as needed
+// ];
 
-
-
-const statuses = {
-  '1': 1, // Status for Puerto Galera
-  '2': 0, // Status for San Teodoro
-  '3': 0, // Status for Baco
-  '4': 1, // Status for Calapan City
-  '5': 0, // Status for Naujan
-  '6': 1, // Status for Victoria
-  '7': 1, // Status for Socorro
-  '8': 0, // Status for Pinamalayan
-  '9': 1, // Status for Gloria
-  '10': 0, // Status for Bansud
-  '11': 1, // Status for Bongabong
-  '12': 0, // Status for Roxas
-  '13': 1, // Status for Mansalay
-  '14': 0, // Status for Bulalacao
-  // Add statuses for other municipalities
-};
 
 
 function UserProfile() {
+  const [placeholderOrderDetailsList, setOrderDetailsList] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [message, setMessage] = useState('');
   const IP_ADR = process.env.REACT_APP_IP_ADR;
@@ -61,8 +89,22 @@ function UserProfile() {
       }
     };
 
+    const fetchOrderDetails = async () => {
+      try {
+        // Replace the URL with your actual endpoint that returns the order details
+        const response = await axios.get(`http://${IP_ADR}:5000/api/shipments/get`);
+        setOrderDetailsList(response.data); // Set the state with the fetched data
+      } catch (err) {
+        console.error('Error fetching order details:', err);
+        setMessage('Failed to fetch order details.');
+        setOpenSnackbar(true);
+      }
+    };
+
+    fetchOrderDetails();
     fetchProfile();
-  }, []); // No dependencies needed as localStorage access doesn't rely on component re-render
+  }, [IP_ADR]); // No dependencies needed as localStorage access doesn't rely on component re-render
+
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -71,22 +113,13 @@ function UserProfile() {
     setOpenSnackbar(false);
   };
 
-  const [selectedMunicipality, setSelectedMunicipality] = useState(null);
-
-  // Function to handle municipality selection, to be passed to MapComponent
-  const handleMunicipalitySelect = (municipalityId) => {
-    const municipality = municipalities.find(m => m.id === municipalityId);
-    const status = statuses[municipalityId];
-    setSelectedMunicipality({ ...municipality, status });
-  };
+  const [selectedShipment, setSelectedShipment] = useState(null);
 
   const placeholderOrderDetails = {
     dateIssued: 'July 15, 2024',
     timeIssued: '14:00',
-    controlNumbers: {
-      rasAsf: '23023 - 229',
-      aic: 'S2023 - 317'
-    },
+    rasAsf: '23023 - 229',
+    aic: 'S2023 - 317',
     deliveryStatus: [
       { description: 'Checking', date: 'Jan 24', state: 'checking' },
       { description: 'In Transit', date: 'Jan 25', state: 'inTransit' },
@@ -119,7 +152,7 @@ function UserProfile() {
     }
     return acc;
   }, {});
-  
+
 
 
   return (
@@ -130,21 +163,22 @@ function UserProfile() {
 
       <div className="user-profile-container">
         <div className='home-tracklist'>
-          <Tracklist />
-        </div>
+        <Tracklist
+  orderDetailsList={placeholderOrderDetailsList}
+  onSelectShipment={(shipment) => setSelectedShipment(shipment)}
+/>        </div>
         <div className='main-content'>
           <div className='map'>
-            {/* Here, we replace the email display with the MapComponent */}
             <MapComponent municipalities={municipalities} statuses={dynamicStatuses} />
 
           </div>
           <div>
             <DetailsComponent
-            selectedMunicipality={placeholderSelectedMunicipality}
-            orderDetails={placeholderOrderDetails}
-          />
+              selectedMunicipality={placeholderSelectedMunicipality}
+              orderDetails={selectedShipment || placeholderOrderDetails}
+            />
           </div>
-          
+
         </div>
         <Snackbar
           open={openSnackbar}

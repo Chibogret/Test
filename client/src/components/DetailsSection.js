@@ -25,7 +25,7 @@ const DetailsComponent = ({ selectedMunicipality, orderDetails }) => {
   }
 
   const { name } = selectedMunicipality;
-  const { dateIssued, timeIssued, controlNumbers, deliveryStatus, timeline } = orderDetails;
+  const { dateIssued, timeIssued, rasAsf, aic, deliveryStatus, timeline } = orderDetails;
 
   return (
     <div className='details-container'>
@@ -50,11 +50,11 @@ const DetailsComponent = ({ selectedMunicipality, orderDetails }) => {
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row"><strong>RAS-ASF Control No.:</strong></TableCell>
-                <TableCell>{controlNumbers.rasAsf}</TableCell>
+                <TableCell>{rasAsf}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row"><strong>AIC Control No.:</strong></TableCell>
-                <TableCell>{controlNumbers.aic}</TableCell>
+                <TableCell>{aic}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -68,7 +68,7 @@ const DetailsComponent = ({ selectedMunicipality, orderDetails }) => {
       </div>
 
       {/* Use the correct MUI Timeline components */}
-      <div className='delivery-timeline'>
+      <div className='delivery-timeline' style={{maxHeight: "350px"}}>
         <h3>Timeline</h3>
 
         <Timeline position='left'>
