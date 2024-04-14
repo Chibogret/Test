@@ -82,4 +82,28 @@ router.get('/get', async (req, res) => {
   }
 });
 
+router.put('/update-shipment/:id', async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body; // All updated fields are expected to be in the request body
+
+  try {
+    // Find the shipment by ID and update it
+    const updatedShipment = await Shipment.findByIdAndUpdate(id, {
+      $set: updateData
+    }, { new: true }); // "new: true" ensures the method returns the document after update
+
+    if (!updatedShipment) {
+      return res.status(404).json({ message: 'Shipment not found' });
+    }
+
+    res.json({
+      message: 'Shipment updated successfully',
+      data: updatedShipment
+    });
+  } catch (error) {
+    console.error('Update shipment error:', error);
+    res.status(500).json({ message: 'Failed to update shipment' });
+  }
+});
+
 module.exports = router;

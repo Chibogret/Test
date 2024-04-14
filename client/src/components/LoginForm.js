@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -8,29 +8,30 @@ import { AuthContext } from '../auth/AuthProvider'; // Assuming this is the path
 import '../styles.css';
 
 function Login({ onToggleForm }) {
-    const { login } = useContext(AuthContext); // Use the login function from AuthContext
+    const { login } = useContext(AuthContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation(); // Get the location object
     const IP_ADR = process.env.REACT_APP_IP_ADR;
+
+    const from = location.state?.from?.pathname || '/home'; // Use the original path or default to '/home'
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         try {
             const response = await axios.post(`http://${IP_ADR}:5000/api/auth/login`, { email, password });
-
-            // Assuming the response includes the token and user data
             const { token, userData } = response.data;
             localStorage.setItem('token', token); // Store the token
             login(userData, token); // Update the authentication state
 
             setErrorMessage('Login successful.');
             setOpenSnackbar(true);
-            navigate('/home'); // Redirect to the profile page
+            navigate(from, { replace: true }); // Redirect to the originally requested path
         } catch (error) {
             setErrorMessage(error.response?.data.message || 'Login failed. Please try again.');
             setOpenSnackbar(true);
