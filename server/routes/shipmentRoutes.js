@@ -82,6 +82,47 @@ router.get('/get', async (req, res) => {
   }
 });
 
+router.get('/details/:id', async (req, res) => {
+  const { id } = req.params;
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ warning: 'No token found. Please log in.' });
+  }
+
+  try {
+    const shipment = await ShipmentTracking.findById(id);
+    if (!shipment) {
+      return res.status(404).json({ warning: 'Shipment not found.' });
+    }
+
+    const response = {
+      orderDetails: {
+        livestockHandlerName: shipment.livestockHandlerName,
+        plateNumber: shipment.plateNumber,
+        origin: shipment.origin,
+        destination: shipment.destination,
+        numberOfHeads: shipment.numberOfHeads,
+        dateIssued: shipment.dateIssued,
+        timeIssued: shipment.timeIssued,
+        rasAsf: shipment.rasAsf,
+        aic: shipment.aic,
+        timeline: shipment.timeline
+      },
+      deliveryStatus: shipment.deliveryStatus,
+    };
+
+    console.log(response)
+
+    res.json(response);
+  } catch (err) {
+    console.error('Error fetching data:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
 router.put('/update-shipment/:id', async (req, res) => {
   const { id } = req.params;
   const updateData = req.body; // All updated fields are expected to be in the request body

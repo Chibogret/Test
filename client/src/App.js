@@ -24,11 +24,12 @@ function App() {
                   <UserProfile />
                 </ProtectedRoute>
               } />
-              <Route path="/update" element={
+              <Route path="/update/:id" element={
                 <ProtectedRoute>
                   <UpdateConfirmation />
                 </ProtectedRoute>
               } />
+
               {/* You can add more routes here */}
             </Routes>
           </div>
