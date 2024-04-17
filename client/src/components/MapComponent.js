@@ -3,6 +3,9 @@ import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 function MapComponent({ municipalities, statuses }) {
+
+  console.log(statuses)
+
   const mapBounds = [
     [12.109152, 120.808411], // Southwest corner of Mindoro
     [13.707367, 121.843872]  // Northeast corner of Mindoro
@@ -25,13 +28,15 @@ function MapComponent({ municipalities, statuses }) {
 
   return (
     <MapContainer
-      center={[13.1162, 121.0794]} // Center of Oriental Mindoro
-      zoom={10}
-      scrollWheelZoom={true}
-      dragging={true}
-      style={{ height: '100%', width: '100%' }}
-      maxBounds={mapBounds}
-    >
+  key={JSON.stringify(statuses)} // Change key when statuses change
+  center={[13.1162, 121.0794]}
+  zoom={10}
+  scrollWheelZoom={true}
+  dragging={true}
+  style={{ height: '100%', width: '100%' }}
+  maxBounds={mapBounds}
+>
+
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

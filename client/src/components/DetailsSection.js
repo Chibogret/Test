@@ -19,12 +19,11 @@ import Paper from '@mui/material/Paper';
 
 const warningMessage = "There may be delays due to unforeseen circumstances. Please keep this in mind and plan accordingly.";
 
-const DetailsComponent = ({ selectedMunicipality, orderDetails }) => {
-  if (!selectedMunicipality || !orderDetails) {
+const DetailsComponent = ({orderDetails }) => {
+  if (!orderDetails) {
     return <div>No details available</div>;
   }
 
-  const { name } = selectedMunicipality;
   const { dateIssued, timeIssued, rasAsf, aic, deliveryStatus, timeline } = orderDetails;
 
   return (
@@ -61,7 +60,7 @@ const DetailsComponent = ({ selectedMunicipality, orderDetails }) => {
         </TableContainer>
         <div className="qr-code">
           <div className='qr-box'>
-            <QRCode value={name} size={128} level={"H"} />
+            <QRCode value={aic} size={128} level={"H"} />
             <div className='qr-label'>Scan the QR code</div>
           </div>
         </div>
@@ -75,7 +74,6 @@ const DetailsComponent = ({ selectedMunicipality, orderDetails }) => {
           {timeline.map((item, index) => (
             <TimelineItem key={index}>
               <TimelineOppositeContent style={{ maxWidth: "1px", paddingLeft: '0px', paddingRight: '0px' }} />
-              {/* Item name and status with CSS for bold name */}
               <TimelineContent style={{ paddingRight: '16px', textAlign: 'right' }}>
 
                 {item.time}

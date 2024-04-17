@@ -41,7 +41,8 @@ router.post('/register-shipment', async (req, res) => {
     const timeline = path.map(name => ({
       name,
       status: 'completed',
-      time: '-'
+      time: '-',
+      checkedby: '-'
     }));
 
     const newShipment = new ShipmentTracking({

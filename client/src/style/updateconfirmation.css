@@ -3,4 +3,20 @@
     margin-top: 20px; /* Adjust as needed for your layout */
     margin-bottom: 20px; /* Provides some space below the title */
   }
+
+
+.update-confirmation .main-content {
+  margin-top: 50px;
   
+}
+
+.update-confirmation-details {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.update-confirmation .list-container {
+  
+}

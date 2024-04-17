@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Snackbar, Alert, Paper, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import '../style/updateconfirmation.css'; // Import a CSS file for additional styling
+import InspectorForm from './InspectorForm';
+import '../style/updateconfirmation.css';
 
-function UpdateConfirmation(shipmentDetails) {
-  const [shipment, setShipment] = useState(shipmentDetails.shipmentDetails)
+function UpdateConfirmation(props) {
+  const { shipmentDetails } = props;  // Destructure shipmentDetails from props
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { id } = useParams();
-  
+  const { id } = useParams();  // Correctly fetch id from the URL params
 
-  const IP_ADR = process.env.REACT_APP_IP_ADR;
+  // No longer directly console.log here, it should be used in debugging only if necessary
+  console.log(shipmentDetails.livestockHandlerName);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -20,57 +21,51 @@ function UpdateConfirmation(shipmentDetails) {
     setOpenSnackbar(false);
   };
 
- 
   return (
     <div>
       <Navbar />
-      <Paper className="update-confirmation-container" elevation={3}>
+      <Paper className="update-confirmation-details" elevation={0}>
         <Typography variant="h4" className="title">
           Update Confirmation
-          
         </Typography>
-        <p>
-        Shipment Update for ID: {id}
-        </p>
-        {shipment && (
+        <p>Shipment Update for ID: {id}</p>
+        <Divider />
+        <p style={{textAlign:"left", fontWeight:"bold"}}>Details</p>
+        {shipmentDetails && (
           <>
             <List className="list-container">
               <ListItem>
-                <ListItemText primary="Livestock Handler" secondary={shipment.livestockHandlerName} />
+                <ListItemText primary="Livestock Handler" secondary={shipmentDetails.livestockHandlerName} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Plate Number" secondary={shipment.plateNumber} />
+                <ListItemText primary="Plate Number" secondary={shipmentDetails.plateNumber} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Origin" secondary={shipment.origin} />
+                <ListItemText primary="Origin" secondary={shipmentDetails.origin} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Destination" secondary={shipment.destination} />
+                <ListItemText primary="Destination" secondary={shipmentDetails.destination} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Number of Heads" secondary={shipment.numberOfHeads} />
+                <ListItemText primary="Number of Heads" secondary={shipmentDetails.numberOfHeads} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Date Issued" secondary={shipment.dateIssued} />
+                <ListItemText primary="Date Issued" secondary={shipmentDetails.dateIssued} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Time Issued" secondary={shipment.timeIssued} />
+                <ListItemText primary="Time Issued" secondary={shipmentDetails.timeIssued} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="RAS-ASF Control No." secondary={shipment.rasAsf} />
+                <ListItemText primary="RAS-ASF Control No." secondary={shipmentDetails.rasAsf} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="AIC Control No." secondary={shipment.aic} />
+                <ListItemText primary="AIC Control No." secondary={shipmentDetails.aic} />
               </ListItem>
             </List>
-            <Divider />
-            <Typography variant="h5" className="section-title">
-              Delivery Status
-            </Typography>
-          
-            {shipment.warningMessage && (
-              <Alert severity="warning">{shipment.warningMessage}</Alert>
-            )}
+            <Divider/>
+            <p style={{textAlign:"left", fontWeight:"bold"}}>Authorization</p>
+
+            <InspectorForm />
           </>
         )}
         <Snackbar
@@ -80,7 +75,7 @@ function UpdateConfirmation(shipmentDetails) {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
           <Alert onClose={handleCloseSnackbar} severity="error">
-            {shipment ? shipment.warningMessage : 'Error fetching data.'}
+            {shipmentDetails ? shipmentDetails.warningMessage : 'Error fetching data.'}
           </Alert>
         </Snackbar>
       </Paper>

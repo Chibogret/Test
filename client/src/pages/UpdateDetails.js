@@ -4,6 +4,8 @@ import { Snackbar, Alert } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import UpdateComponent from '../components/UpdateSection';
+import '../style/updateconfirmation.css';
+import InspectorForm from '../components/InspectorForm';
 
 function UpdateConfirmation() {
   const [orderDetails, setOrderDetails] = useState({});
@@ -69,18 +71,12 @@ function UpdateConfirmation() {
   return (
     <div>
       <Navbar />
-      <div className="update-confirmation-container">
+      <div className="update-confirmation">
         <div className="main-content">
-          <h1>Order Update for User ID: {id}</h1>
           <UpdateComponent
               shipmentDetails={orderDetails}
             />
           
-          <div className='delivery-status'>
-            <p>Current Status: {deliveryStatus.current}</p>
-            <p>Timeline: {deliveryStatus.timeline}</p>
-            {/* Map through the timeline if it's an array */}
-          </div>
           {warningMessage && (
             <div className='warning-message'>
               <Alert severity="warning">{warningMessage}</Alert>

@@ -11,8 +11,8 @@ const modalStyle = {
     width: '80%',
     maxWidth: '400px',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
+    border: '1px solid #333',
+    borderRadius: "5px",
     p: 4,
 };
 

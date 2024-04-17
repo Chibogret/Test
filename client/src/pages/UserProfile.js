@@ -113,8 +113,6 @@ function UserProfile() {
     setOpenSnackbar(false);
   };
 
-  const [selectedShipment, setSelectedShipment] = useState(null);
-
   const placeholderOrderDetails = {
     dateIssued: 'July 15, 2024',
     timeIssued: '14:00',
@@ -134,24 +132,31 @@ function UserProfile() {
     ]
   };
 
-  const placeholderSelectedMunicipality = {
-    id: '1',
-    name: 'Puerto Galera',
-    coords: [13.494839, 120.955457],
-    status: 1 // Assuming 1 represents an 'active' status
-  };
 
-  const dynamicStatuses = placeholderOrderDetails.timeline.reduce((acc, current) => {
-    // Assign 2 for 'current', 1 for 'completed', and 0 for any other status
-    if (current.status === 'current') {
-      acc[current.name.toUpperCase()] = 2;
-    } else if (current.status === 'completed') {
-      acc[current.name.toUpperCase()] = 1;
-    } else {
-      acc[current.name.toUpperCase()] = 0;
+  const [selectedShipment, setSelectedShipment] = useState(placeholderOrderDetails);
+
+
+  const dynamicStatuses = selectedShipment.timeline.reduce((acc, current) => {
+    // Convert the status to lowercase for consistent comparison, assuming that
+    // the status might not always be in a consistent case format.
+    const status = current.status.toLowerCase();
+
+    // Use a switch-case for clarity and potential extension
+    switch (status) {
+      case 'current':
+        acc[current.name.toUpperCase()] = 2;
+        break;
+      case 'completed':
+        acc[current.name.toUpperCase()] = 1;
+        break;
+      default:
+        acc[current.name.toUpperCase()] = 0;
+        break;
     }
     return acc;
   }, {});
+
+
 
 
 
@@ -163,10 +168,10 @@ function UserProfile() {
 
       <div className="user-profile-container">
         <div className='home-tracklist'>
-        <Tracklist
-  orderDetailsList={placeholderOrderDetailsList}
-  onSelectShipment={(shipment) => setSelectedShipment(shipment)}
-/>        </div>
+          <Tracklist
+            orderDetailsList={placeholderOrderDetailsList}
+            onSelectShipment={(shipment) => setSelectedShipment(shipment)}
+          />        </div>
         <div className='main-content'>
           <div className='map'>
             <MapComponent municipalities={municipalities} statuses={dynamicStatuses} />
@@ -174,7 +179,6 @@ function UserProfile() {
           </div>
           <div>
             <DetailsComponent
-              selectedMunicipality={placeholderSelectedMunicipality}
               orderDetails={selectedShipment || placeholderOrderDetails}
             />
           </div>

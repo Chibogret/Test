@@ -15,7 +15,7 @@
   max-width: 80%; /* Maximum width in relation to parent container */
   background-color: #fff; /* White background for the form */
   opacity: 0.9; /* Slightly transparent background */
-  border-radius: 3px; /* Rounded corners for the form */
+  border-radius: 5px; /* Rounded corners for the form */
   padding: 50px 20px; /* Padding around the content */
 }
 
