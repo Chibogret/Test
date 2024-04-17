@@ -175,7 +175,6 @@ function UserProfile() {
         <div className='main-content'>
           <div className='map'>
             <MapComponent municipalities={municipalities} statuses={dynamicStatuses} />
-
           </div>
           <div>
             <DetailsComponent

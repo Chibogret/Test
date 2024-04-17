@@ -27,7 +27,7 @@ const DetailsComponent = ({orderDetails }) => {
   const { dateIssued, timeIssued, rasAsf, aic, deliveryStatus, timeline } = orderDetails;
 
   return (
-    <div className='details-container'>
+    <div className='details-container' >
       
       <div className='details-header'>
 
@@ -67,7 +67,7 @@ const DetailsComponent = ({orderDetails }) => {
       </div>
 
       {/* Use the correct MUI Timeline components */}
-      <div className='delivery-timeline' style={{maxHeight: "350px"}}>
+      <div className='delivery-timeline' style={{maxHeight:"450px", overflow:"auto"}}>
         <h3>Timeline</h3>
 
         <Timeline position='left'>

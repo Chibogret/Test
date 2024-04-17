@@ -75,6 +75,7 @@
   justify-content: center;
   text-align: right;
   padding-left: 0; /* Adjust for mobile, no sidebar initially visible */
+
 }
 
 /* Toggle class for showing the sidebar */
@@ -131,7 +132,6 @@
 
 .details-container {
   width: 90vw;
-  max-height: 40vh;
   margin-left: auto;
   margin-right: auto;
   display: grid;
@@ -141,7 +141,6 @@
   background: #fff;
   font-family: 'Arial', sans-serif;
   padding-top: 20px;
-  margin-bottom: 50px;
 }
 
 /* Media query for screens smaller than 768px */
@@ -168,7 +167,6 @@
 }
 /* Styles for individual elements */
 .order-details, .vehicle-details, .delivery-status {
-  
   padding: 15px;
   border-radius: 5px;
   text-align: left;
@@ -176,9 +174,10 @@
 
 .delivery-timeline {
   border: 1px solid #ddd;
-  padding: 15px;
   border-radius: 5px;
   text-align: left;
+  min-height: 100%;
+  padding-left: 10px;
 }
 
 /* Media query for PC screens */
@@ -207,10 +206,10 @@
   padding: 5px;
 }
 
-h3 {
-  margin-top: 0;
-  color: #333;
+.delivery-timeline h3 {
+  padding: 5px;
 }
+
 
 .delivery-status p {
   display: flex;
