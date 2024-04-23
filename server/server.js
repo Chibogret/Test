@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 const shipmentRoutes = require('./routes/shipmentRoutes') // Import the shipment routes
 const cors = require('cors');
 const path = require('path');
+const municipalitiesRoutes = require('./routes/municipalityRoutes');
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(express.json());
 
 // Use the Auth Routes
 app.use('/api/auth', authRoutes);
+
+app.use('/api/municipalities', municipalitiesRoutes)
 
 // Use the User Routes
 app.use('/api', userRoutes); // Update this to include '/users' to differentiate from other routes
