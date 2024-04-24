@@ -41,15 +41,19 @@ const MunicipalitySchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    checkpoint: {
+        type: CheckpointSchema,
+        required: true
+    },
     asfStatus: {
         type: String,
         required: true,
         enum: ['No Cases', 'Monitoring', 'Outbreak', 'Contained']
     },
-    checkpoints: [CheckpointSchema],
     movementData: [MovementDataSchema],
     alerts: [{
         message: String,
+        severity: String,
         date: {
             type: Date,
             default: Date.now

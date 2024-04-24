@@ -56,7 +56,6 @@ function PanelComponent({ selectedMunicipality, setIsPanelOpen }) {
 }
 const styles = {
   panel: {
-    backgroundColor: '#f7f7f7',
     border: '1px solid #d3d3d3',
     borderRadius: '8px',
     margin: '10px',

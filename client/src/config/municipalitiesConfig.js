@@ -16,3 +16,23 @@ export const municipalities = [
     { id: '15', name: 'Bulalacao', coords: [12.347154157756911, 121.33718759882257] }
     // Add more municipalities as needed
   ];
+
+export const StatusEnum = {
+    ACTIVE: 'Active',
+    INACTIVE: 'Inactive',
+    UNDER_MAINTENANCE: 'Under Maintenance'
+};
+
+export const OutbreakStatus = {
+  NO_CASES: 'No Cases',
+  MONITORING: 'Monitoring',
+  OUTBREAK: 'Outbreak',
+  CONTAINED: 'Contained'
+};
+
+export const Severity = {
+  LOW: 'Low',
+  MEDIUM: 'Medium',
+  HIGH: 'High',
+  CRITICAL: 'Critical'
+};
