@@ -10,6 +10,17 @@ function UpdateConfirmation(props) {
   const { shipmentDetails } = props;  // Destructure shipmentDetails from props
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { id } = useParams();  // Correctly fetch id from the URL params
+  const [inspector, setInspector] = useState('');
+  const [checkpoint, setCheckpoint] = useState('');
+
+    const handleInspectorChange = (newInspector) => {
+        setInspector(newInspector);
+        console.log('Inspector updated in Parent:', inspector);
+    };
+    const handleCheckpointChange = ( newCheckpoint) => {
+      setCheckpoint(newCheckpoint);
+      console.log('Checkpoint updated in Parent:', checkpoint);
+  };
 
   // No longer directly console.log here, it should be used in debugging only if necessary
   console.log(shipmentDetails.livestockHandlerName);
@@ -24,7 +35,7 @@ function UpdateConfirmation(props) {
   return (
     <div>
       <Navbar />
-      <Paper className="update-confirmation-details" elevation={0}>
+      <Paper className="update-confirmation-details" elevation={3}>
         <Typography variant="h4" className="title">
           Update Confirmation
         </Typography>
@@ -65,7 +76,7 @@ function UpdateConfirmation(props) {
             <Divider/>
             <p style={{textAlign:"left", fontWeight:"bold"}}>Authorization</p>
 
-            <InspectorForm />
+            <InspectorForm onInspectorChange={handleInspectorChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange}/>
           </>
         )}
         <Snackbar

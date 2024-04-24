@@ -42,7 +42,7 @@ function Tracklist({ orderDetailsList, onSelectShipment }) {
           <CardActionArea>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                Shipment Number: {orderDetails.shipmentNumber}
+                {orderDetails.origin} to {orderDetails.destination}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Date: {orderDetails.dateIssued}

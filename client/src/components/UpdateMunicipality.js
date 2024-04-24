@@ -28,8 +28,8 @@ function UpdateMunicipalityModal({ open, handleClose }) {
     // State for form fields
     const [municipality, setMunicipality] = useState('');
     const [checkpointStatus, setCheckpointStatus] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    const [startTime, setStartTime] = useState('08:00 AM');
+    const [endTime, setEndTime] = useState('05:00 PM');
 
     const [outbreakStatus, setOutbreakStatus] = useState('');
 
@@ -224,7 +224,7 @@ function UpdateMunicipalityModal({ open, handleClose }) {
                                 required
                             >
                                 <MenuItem value="" disabled>
-                                    Operational Status
+                                    Outbreak Status
                                 </MenuItem>
                                 {outbreakStatusValues.map((status, index) => (
                                     <MenuItem

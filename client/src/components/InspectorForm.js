@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Paper, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Paper } from '@mui/material';
 
-function InspectorForm() {
+function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList = [], selectedCheckpoint }) {
     const [inspector, setInspector] = useState('');
     const [checkpoint, setCheckpoint] = useState('');
 
+    useEffect(() => {
+        // Update the checkpoint when the selectedCheckpoint prop changes
+        if (selectedCheckpoint) {
+            setCheckpoint(selectedCheckpoint);
+        } else if (checkpointList.length > 0) {
+            setCheckpoint(checkpointList[0].id); // Default to the first checkpoint
+        }
+    }, [selectedCheckpoint, checkpointList]);
+
     const handleInspectorChange = (event) => {
-        setInspector(event.target.value);
+        const newInspector = event.target.value;
+        setInspector(newInspector);
+        onInspectorChange(newInspector);
     };
 
     const handleCheckpointChange = (event) => {
-        setCheckpoint(event.target.value);
+        const newCheckpoint = event.target.value;
+        console.log(checkpoint)
+        setCheckpoint(newCheckpoint);
+        onCheckpointChange(newCheckpoint); // Notify the parent component of the change
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Here you could add logic to submit these values to a backend service
         console.log('Submitting', { inspector, checkpoint });
+        // Example: onFormSubmit({ inspector, checkpoint }); // Handle the form submission in the parent component if needed
     };
 
     return (
@@ -30,20 +44,26 @@ function InspectorForm() {
                     onChange={handleInspectorChange}
                     margin="normal"
                 />
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" disabled={checkpointList.length === 0}>
                     <InputLabel>Checkpoint</InputLabel>
                     <Select
+                        style={{textAlign:"left"}}
                         value={checkpoint}
                         label="Checkpoint"
                         onChange={handleCheckpointChange}
                     >
-                        <MenuItem value="Checkpoint 1">Checkpoint 1</MenuItem>
-                        <MenuItem value="Checkpoint 2">Checkpoint 2</MenuItem>
-                        <MenuItem value="Checkpoint 3">Checkpoint 3</MenuItem>
-                        {/* Add more options here as needed */}
+                        {checkpointList.map((checkpointItem) => {
+                            console.log(checkpointItem._id); // Check the uniqueness of each ID in the console
+                            return (
+                                <MenuItem key={checkpointItem._id} value={checkpointItem.name}>
+                                    {checkpointItem.name}
+                                </MenuItem>
+                            );
+                        })}
+
                     </Select>
                 </FormControl>
-                <Button type="submit" variant="contained" color="primary" fullWidth>
+                <Button type="submit" variant="contained" color="primary" fullWidth disabled={checkpointList.length === 0}>
                     Submit
                 </Button>
             </form>

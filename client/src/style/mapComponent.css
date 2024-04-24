@@ -1,38 +1,72 @@
 .panel {
-    position: absolute;
-    top: 0;
-    right: -100%; /* Start off-screen */
-    width: 30%; /* Adjust based on your layout needs */
-    height: 100%;
-    background: white;
-    transition: right 0.5s ease-in-out; /* Smooth transition for the right property */
-    z-index: 1000;
+  position: absolute;
+  top: 0;
+  right: -100%;
+  /* Start off-screen */
+  width: 30%;
+  /* Adjust based on your layout needs */
+  height: 100%;
+  background: white;
+  transition: right 0.5s ease-in-out;
+  /* Smooth transition for the right property */
+  z-index: 1000;
+
+}
+
+.panel.open {
+  right: 0;
+  /* End at the edge of the screen */
+}
+
+@media (max-width: 768px) {
+  .panel {
+    width: 100%;
+    /* Full width on mobile devices */
   }
-  
-  .panel.open {
-    right: 0; /* End at the edge of the screen */
-  }
-  
-  @media (max-width: 768px) {
-    .panel {
-      width: 100%; /* Full width on mobile devices */
-    }
-  }
-  .panel-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30%;
-    height: 96%;
-    background: white;
-    z-index: 1000;
-    margin: 8px;
-    border-radius: 5px;
-    border: 2px;
+}
+
+.panel-container {
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.panel-container::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
+}
+
+.panel-container {
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 96%;
+  background-color: white;
+  z-index: 1000;
+  margin: 8px;
+  border-radius: 5px;
+  border: 2px;
+  text-align: center;
+
 }
 
 @media screen and (max-width: 768px) {
-    .panel-container {
-        width: 96%;
-    }
+  .panel-container {
+    width: 96%;
+  }
+}
+
+.panel-header {
+  color: white;
+  background-color: #00B69D;
+  font-size: xx-large;
+  font-weight: bold;
+  position: relative;
+  margin: 5px;
+  border-radius: 5px;
+  border: 2px;
+  padding: 15px
 }

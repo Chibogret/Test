@@ -4,6 +4,7 @@ import PanelComponent from './MapPanel';
 import 'leaflet/dist/leaflet.css';
 import '../style/mapComponent.css';
 
+
 function MapComponent({ municipalities, statuses }) {
   // State hooks for managing the selected municipality and panel visibility
   const [selectedMunicipality, setSelectedMunicipality] = useState(null);
@@ -20,7 +21,7 @@ function MapComponent({ municipalities, statuses }) {
   const getFillColor = (status) => {
     switch (status) {
       case 1: // Active
-        return "#E65F67"; // Red color
+        return "#00B69D"; // Red color
       case 2: // Current
         return "#4CAF50"; // Green color
       default: // Inactive or other

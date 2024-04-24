@@ -20,11 +20,13 @@ import Paper from '@mui/material/Paper';
 const warningMessage = "There may be delays due to unforeseen circumstances. Please keep this in mind and plan accordingly.";
 
 const DetailsComponent = ({orderDetails }) => {
+  const IP_ADR = process.env.REACT_APP_IP_ADR;
+
   if (!orderDetails) {
     return <div>No details available</div>;
   }
 
-  const { dateIssued, timeIssued, rasAsf, aic, deliveryStatus, timeline } = orderDetails;
+  const { dateIssued, timeIssued, rasAsf, aic, deliveryStatus, timeline, _id } = orderDetails;
 
   return (
     <div className='details-container' >
@@ -60,7 +62,7 @@ const DetailsComponent = ({orderDetails }) => {
         </TableContainer>
         <div className="qr-code">
           <div className='qr-box'>
-            <QRCode value={aic} size={128} level={"H"} />
+            <QRCode value={`http://${IP_ADR}:3000/update/`+_id} size={128} level={"H"} />
             <div className='qr-label'>Scan the QR code</div>
           </div>
         </div>
