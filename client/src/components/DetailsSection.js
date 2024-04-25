@@ -84,7 +84,8 @@ const DetailsComponent = ({orderDetails }) => {
               {/* Displaying time on the right side */}
               <TimelineContent style={{ flex: 1, textAlign: 'left' }}>
                 <p style={{ margin: 0, fontWeight: 'bold' }}>{item.name}</p>
-                <p style={{ margin: 0 }}>{item.status}</p>
+                <p style={{ margin: 0 }}>{item.status.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</p>
+                <p style={{ margin: 0 }}>Checked by: {item.checkedby}</p>
               </TimelineContent>
               <TimelineSeparator>
                 <TimelineDot color={item.status === 'completed' ? 'primary' : item.status === 'current' ? 'secondary' : 'grey'} />

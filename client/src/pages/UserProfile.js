@@ -143,14 +143,20 @@ function UserProfile() {
 
     // Use a switch-case for clarity and potential extension
     switch (status) {
+      case 'pending':
+        acc[current.name.toUpperCase()] = 3;
+        break;
       case 'current':
         acc[current.name.toUpperCase()] = 2;
         break;
       case 'completed':
         acc[current.name.toUpperCase()] = 1;
         break;
-      default:
+      case 'completed (skipped)':
         acc[current.name.toUpperCase()] = 0;
+        break;
+      default:
+        acc[current.name.toUpperCase()] = -1;
         break;
     }
     return acc;

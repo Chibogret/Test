@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Snackbar, Alert, Paper, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
+import { Snackbar, Alert, Button, Paper, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import InspectorForm from './InspectorForm';
@@ -13,13 +13,15 @@ function UpdateConfirmation(props) {
   const [inspector, setInspector] = useState('');
   const [checkpoint, setCheckpoint] = useState('');
 
-    const handleInspectorChange = (newInspector) => {
-        setInspector(newInspector);
-        console.log('Inspector updated in Parent:', inspector);
-    };
-    const handleCheckpointChange = ( newCheckpoint) => {
-      setCheckpoint(newCheckpoint);
-      console.log('Checkpoint updated in Parent:', checkpoint);
+  const IP_ADR = process.env.REACT_APP_IP_ADR;
+
+  const handleInspectorChange = (newInspector) => {
+    setInspector(newInspector);
+    console.log('Inspector updated in Parent:', inspector);
+  };
+  const handleCheckpointChange = (newCheckpoint) => {
+    setCheckpoint(newCheckpoint);
+    console.log('Checkpoint updated in Parent:', checkpoint);
   };
 
   // No longer directly console.log here, it should be used in debugging only if necessary
@@ -32,64 +34,106 @@ function UpdateConfirmation(props) {
     setOpenSnackbar(false);
   };
 
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    // Validate input fields before submitting
+    if (!inspector || inspector.trim() === '') {
+      alert('Inspector name is required');
+      return;
+    }
+  
+    if (!checkpoint || checkpoint.trim() === '') {
+      alert('Checkpoint is required');
+      return;
+    }
+  
+    // Log for debugging; consider removing or replacing with more formal logging
+    console.log('Submitting', { inspector, checkpoint });
+  
+    try {
+      const response = await axios.put(`http://${IP_ADR}:5000/api/shipments/update/${id}`, {
+        inspector: inspector,
+        checkpointName: checkpoint,
+      });
+  
+      // Assuming the response body has the success status and data
+      if (response.status === 200) {
+        setOpenSnackbar(true);  // Show success message
+        console.log('Update successful:', response.data);
+      } else {
+        throw new Error('Failed to update shipment details');
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      alert('Error updating shipment details: ' + error.message);
+    }
+  };
+  
   return (
     <div>
       <Navbar />
-      <Paper className="update-confirmation-details" elevation={3}>
-        <Typography variant="h4" className="title">
-          Update Confirmation
-        </Typography>
-        <p>Shipment Update for ID: {id}</p>
-        <Divider />
-        <p style={{textAlign:"left", fontWeight:"bold"}}>Details</p>
-        {shipmentDetails && (
-          <>
-            <List className="list-container">
-              <ListItem>
-                <ListItemText primary="Livestock Handler" secondary={shipmentDetails.livestockHandlerName} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Plate Number" secondary={shipmentDetails.plateNumber} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Origin" secondary={shipmentDetails.origin} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Destination" secondary={shipmentDetails.destination} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Number of Heads" secondary={shipmentDetails.numberOfHeads} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Date Issued" secondary={shipmentDetails.dateIssued} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Time Issued" secondary={shipmentDetails.timeIssued} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="RAS-ASF Control No." secondary={shipmentDetails.rasAsf} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="AIC Control No." secondary={shipmentDetails.aic} />
-              </ListItem>
-            </List>
-            <Divider/>
-            <p style={{textAlign:"left", fontWeight:"bold"}}>Authorization</p>
+      <form onSubmit={handleSubmit}>
+        <Paper className="update-confirmation-details" elevation={3}>
+          <Typography variant="h4" className="title">
+            Update Confirmation
+          </Typography>
+          <p>Shipment Update for ID: {id}</p>
+          <Divider />
+          <p style={{ textAlign: "left", fontWeight: "bold" }}>Details</p>
+          {shipmentDetails && (
+            <>
+              <List className="list-container">
+                <ListItem>
+                  <ListItemText primary="Livestock Handler" secondary={shipmentDetails.livestockHandlerName} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Plate Number" secondary={shipmentDetails.plateNumber} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Origin" secondary={shipmentDetails.origin} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Destination" secondary={shipmentDetails.destination} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Number of Heads" secondary={shipmentDetails.numberOfHeads} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Date Issued" secondary={shipmentDetails.dateIssued} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Time Issued" secondary={shipmentDetails.timeIssued} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="RAS-ASF Control No." secondary={shipmentDetails.rasAsf} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="AIC Control No." secondary={shipmentDetails.aic} />
+                </ListItem>
+              </List>
+              <Divider />
+              <p style={{ textAlign: "left", fontWeight: "bold" }}>Authorization</p>
 
-            <InspectorForm onInspectorChange={handleInspectorChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange}/>
-          </>
-        )}
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert onClose={handleCloseSnackbar} severity="error">
-            {shipmentDetails ? shipmentDetails.warningMessage : 'Error fetching data.'}
-          </Alert>
-        </Snackbar>
-      </Paper>
+              <InspectorForm onInspectorChange={handleInspectorChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange} />
+              <Button type="submit" variant="contained" color="primary" fullWidth disabled={checkpoint.length === 0}>
+                Submit
+              </Button>
+            </>
+          )}
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          >
+            <Alert onClose={handleCloseSnackbar} severity="error">
+              {shipmentDetails ? shipmentDetails.warningMessage : 'Error fetching data.'}
+            </Alert>
+          </Snackbar>
+        </Paper>
+      </form>
     </div>
   );
 }

@@ -6,14 +6,13 @@ function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList =
     const [checkpoint, setCheckpoint] = useState('');
 
     useEffect(() => {
-        // Update the checkpoint when the selectedCheckpoint prop changes
         if (selectedCheckpoint) {
-            setCheckpoint(selectedCheckpoint);
+            setCheckpoint(selectedCheckpoint.name); // Assuming selectedCheckpoint is an object with a name
         } else if (checkpointList.length > 0) {
-            setCheckpoint(checkpointList[0].id); // Default to the first checkpoint
+            setCheckpoint(checkpointList[0].name); // Use name instead of id
         }
     }, [selectedCheckpoint, checkpointList]);
-
+    
     const handleInspectorChange = (event) => {
         const newInspector = event.target.value;
         setInspector(newInspector);
@@ -27,15 +26,10 @@ function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList =
         onCheckpointChange(newCheckpoint); // Notify the parent component of the change
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log('Submitting', { inspector, checkpoint });
-        // Example: onFormSubmit({ inspector, checkpoint }); // Handle the form submission in the parent component if needed
-    };
 
     return (
         <Paper className="inspector-form-container" elevation={0}>
-            <form onSubmit={handleSubmit}>
+            
                 <TextField
                     label="Authorized Inspector"
                     variant="outlined"
@@ -52,21 +46,20 @@ function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList =
                         label="Checkpoint"
                         onChange={handleCheckpointChange}
                     >
-                        {checkpointList.map((checkpointItem) => {
-                            console.log(checkpointItem._id); // Check the uniqueness of each ID in the console
-                            return (
-                                <MenuItem key={checkpointItem._id} value={checkpointItem.name}>
-                                    {checkpointItem.name}
-                                </MenuItem>
-                            );
-                        })}
+                        {checkpointList.filter(checkpointItem =>
+    checkpointItem.status !== "completed" && checkpointItem.status !== "completed (skipped)")
+    .map(checkpointItem => (
+        <MenuItem key={checkpointItem._id} value={checkpointItem.name}>
+            {checkpointItem.name}
+        </MenuItem>
+    ))
+}
+
+
 
                     </Select>
                 </FormControl>
-                <Button type="submit" variant="contained" color="primary" fullWidth disabled={checkpointList.length === 0}>
-                    Submit
-                </Button>
-            </form>
+
         </Paper>
     );
 }

@@ -20,6 +20,8 @@ function MapComponent({ municipalities, statuses }) {
   // Function to determine fill color based on status
   const getFillColor = (status) => {
     switch (status) {
+      case 0:
+        return "#00B69D"; // Red color
       case 1: // Active
         return "#00B69D"; // Red color
       case 2: // Current
@@ -29,9 +31,21 @@ function MapComponent({ municipalities, statuses }) {
     }
   };
 
-  const borderColor = "#b0b0b0"; // Light gray for all statuses
-  const borderWidth = (status) => status === 1 || status === 2 ? 3 : 1; // Thicker border for active or current
-
+  const borderColor = "red"; // Light gray for all statuses
+  const borderWidth = (status) => {
+    switch (status) {
+      case 3: // 'current' status, assuming it corresponds to the highest priority
+        return 2; // Thickest border for 'current'
+      case 2: // 'current' status, assuming it corresponds to the highest priority
+        return 5; // Thickest border for 'current'
+      case 1: // 'completed'
+      case 0: // 'completed (skipped)'
+        return 3; // Thicker border for all except '-1'
+      default: // '-1' and any other undefined statuses
+        return 0; // Thinnest border for '-1' or unspecified statuses
+    }
+  };
+  
   const handleMarkerClick = (municipality) => {
     setSelectedMunicipality(municipality);
     setIsPanelOpen(true);
