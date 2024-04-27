@@ -31,7 +31,7 @@ function MapComponent({ municipalities, statuses }) {
     }
   };
 
-  const borderColor = "red"; // Light gray for all statuses
+  const borderColor = "#C4421A"; // Light gray for all statuses
   const borderWidth = (status) => {
     switch (status) {
       case 3: // 'current' status, assuming it corresponds to the highest priority

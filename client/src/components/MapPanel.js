@@ -12,6 +12,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Warning from '@mui/icons-material/Warning';
+import Loading from './Loading';
 
 
 function PanelComponent({ selectedMunicipality, setIsPanelOpen }) {
@@ -132,7 +133,7 @@ function PanelComponent({ selectedMunicipality, setIsPanelOpen }) {
                 
             </>
         ) : (
-            <p>Loading...</p> // Or any other loading state indication
+            <Loading/> // Or any other loading state indication
         )}
     </div>
 );

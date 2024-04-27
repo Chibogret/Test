@@ -84,6 +84,21 @@ router.get('/get', async (req, res) => {
   }
 });
 
+router.get('/latest', async (req, res) => {
+  try {
+    // Assuming 'createdAt' is the timestamp field used to store entry creation time
+    const latestShipments = await ShipmentTracking.find()
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order (newest first)
+      .limit(5); // Limit the results to the 5 latest entries
+
+    res.json(latestShipments); // Send the latest order details as JSON
+  } catch (error) {
+    console.error('Error fetching latest orders:', error);
+    res.status(500).json({ message: 'Failed to fetch latest orders.' });
+  }
+});
+
+
 router.get('/details/:id', async (req, res) => {
   const { id } = req.params;
   const token = req.headers.authorization?.split(" ")[1];
