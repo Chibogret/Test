@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const ShipmentTracking = require('../models/Shipment'); // Ensure the path matches the location of your model file
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.post('/register-shipment', async (req, res) => {
 
     const currentDate = new Date();
     const dateIssued = currentDate.toISOString().split('T')[0];
-    const timeIssued = currentDate.toTimeString().split(' ')[0];
+    const timeIssued = currentDate.toISOString();
 
     const municipalityOrder = ['PUERTO GALERA', 'SAN TEODORO', 'BACO', 'CALAPAN CITY', 'NAUJAN', 'VICTORIA', 'SOCORRO', 'POLA', 'PINAMALAYAN', 'GLORIA', 'BANSUD', 'BONGABONG', 'ROXAS', 'MANSALAY', 'BULALACAO'];
 
@@ -83,6 +84,67 @@ router.get('/get', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch orders.' });
   }
 });
+
+router.get('/search', async (req, res) => {
+  const searchQuery = req.query.search;
+
+  let queryConditions = [];
+
+  if (searchQuery) {
+    // General text search conditions
+    queryConditions = [
+      { origin: { $regex: searchQuery, $options: 'i' } },
+      { destination: { $regex: searchQuery, $options: 'i' } },
+      { livestockHandlerName: { $regex: searchQuery, $options: 'i' } },
+      { plateNumber: { $regex: searchQuery, $options: 'i' } },
+      { rasAsf: { $regex: searchQuery, $options: 'i' } },
+      { aic: { $regex: searchQuery, $options: 'i' } },
+      { 'deliveryStatus.description': { $regex: searchQuery, $options: 'i' } },
+      { 'deliveryStatus.state': { $regex: searchQuery, $options: 'i' } },
+      { 'timeline.name': { $regex: searchQuery, $options: 'i' } },
+      { 'timeline.status': { $regex: searchQuery, $options: 'i' } },
+      { 'timeline.checkedby': { $regex: searchQuery, $options: 'i' } }
+    ];
+
+    // Check if searchQuery is a valid ObjectId
+    if (mongoose.Types.ObjectId.isValid(searchQuery)) {
+      queryConditions.push({ _id: new mongoose.Types.ObjectId(searchQuery) });
+    }
+  }
+
+  try {
+    let shipments;
+    if (queryConditions.length > 0) {
+      shipments = await ShipmentTracking.find({ $or: queryConditions }).sort({ _id: -1 }).limit(20);
+    } else {
+      // If no search parameters, return the 20 most recent shipments
+      shipments = await ShipmentTracking.find({}).sort({ _id: -1 }).limit(20);
+    }
+
+    res.json(shipments);
+  } catch (error) {
+    console.error('Error fetching shipments:', error);
+    res.status(500).send('Error fetching shipment data');
+  }
+});
+
+
+
+router.get('/get/:id', async (req, res) => {
+  const { id } = req.params;  // Extract the id from the request parameters
+  try {
+    const shipment = await ShipmentTracking.findById(id);  // Find the shipment by id in the database
+    if (shipment) {
+      res.json(shipment);  // Send the shipment details as JSON
+    } else {
+      res.status(404).json({ message: 'Shipment not found.' });  // Send a 404 response if no shipment is found
+    }
+  } catch (error) {
+    console.error('Error fetching shipment:', error);
+    res.status(500).json({ message: 'Failed to fetch shipment.' });  // Handle possible errors in fetching from the database
+  }
+});
+
 
 router.get('/latest', async (req, res) => {
   try {

@@ -36,28 +36,26 @@ function UpdateConfirmation(props) {
 
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-  
     // Validate input fields before submitting
     if (!inspector || inspector.trim() === '') {
       alert('Inspector name is required');
       return;
     }
-  
+
     if (!checkpoint || checkpoint.trim() === '') {
       alert('Checkpoint is required');
       return;
     }
-  
+
     // Log for debugging; consider removing or replacing with more formal logging
     console.log('Submitting', { inspector, checkpoint });
-  
+
     try {
       const response = await axios.put(`http://${IP_ADR}:5000/api/shipments/update/${id}`, {
         inspector: inspector,
         checkpointName: checkpoint,
       });
-  
+
       // Assuming the response body has the success status and data
       if (response.status === 200) {
         setOpenSnackbar(true);  // Show success message
@@ -70,12 +68,12 @@ function UpdateConfirmation(props) {
       alert('Error updating shipment details: ' + error.message);
     }
   };
-  
+
   return (
     <div>
       <Navbar />
       <form onSubmit={handleSubmit}>
-        <Paper className="update-confirmation-details" elevation={3}>
+        <Paper className="update-confirmation-details" elevation={0}>
           <Typography variant="h4" className="title">
             Update Confirmation
           </Typography>
@@ -118,8 +116,7 @@ function UpdateConfirmation(props) {
 
               <InspectorForm onInspectorChange={handleInspectorChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange} />
               <Button type="submit" variant="contained" color="primary" fullWidth disabled={checkpoint.length === 0}>
-                Submit
-              </Button>
+                Update              </Button>
             </>
           )}
           <Snackbar

@@ -30,8 +30,6 @@ function ShipmentTrackingModal({ open, handleClose }) {
 
     // Enhanced handleSubmit function
     const handleSubmit = async (event) => {
-        event.preventDefault();
-
         // Convert numberOfHeads to a number to ensure proper data type is sent
         const numericNumberOfHeads = parseInt(numberOfHeads, 10);
 

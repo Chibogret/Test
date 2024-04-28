@@ -12,7 +12,7 @@ function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList =
             setCheckpoint(checkpointList[0].name); // Use name instead of id
         }
     }, [selectedCheckpoint, checkpointList]);
-    
+
     const handleInspectorChange = (event) => {
         const newInspector = event.target.value;
         setInspector(newInspector);
@@ -29,36 +29,36 @@ function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList =
 
     return (
         <Paper className="inspector-form-container" elevation={0}>
-            
-                <TextField
-                    label="Authorized Inspector"
-                    variant="outlined"
-                    fullWidth
-                    value={inspector}
-                    onChange={handleInspectorChange}
-                    margin="normal"
-                />
-                <FormControl fullWidth margin="normal" disabled={checkpointList.length === 0}>
-                    <InputLabel>Checkpoint</InputLabel>
-                    <Select
-                        style={{textAlign:"left"}}
-                        value={checkpoint}
-                        label="Checkpoint"
-                        onChange={handleCheckpointChange}
-                    >
-                        {checkpointList.filter(checkpointItem =>
-    checkpointItem.status !== "completed" && checkpointItem.status !== "completed (skipped)")
-    .map(checkpointItem => (
-        <MenuItem key={checkpointItem._id} value={checkpointItem.name}>
-            {checkpointItem.name}
-        </MenuItem>
-    ))
-}
+
+            <TextField
+                label="Authorized Inspector"
+                variant="outlined"
+                fullWidth
+                value={inspector}
+                onChange={handleInspectorChange}
+                margin="normal"
+            />
+            <FormControl fullWidth style={{marginBottom:"15px"}} disabled={checkpointList.length === 0}>
+                <InputLabel>Checkpoint</InputLabel>
+                <Select
+                    style={{ textAlign: "left" }}
+                    value={checkpoint}
+                    label="Checkpoint"
+                    onChange={handleCheckpointChange}
+                >
+                    {checkpointList.filter(checkpointItem =>
+                        checkpointItem.status !== "completed" && checkpointItem.status !== "completed (skipped)")
+                        .map(checkpointItem => (
+                            <MenuItem key={checkpointItem._id} value={checkpointItem.name}>
+                                {checkpointItem.name}
+                            </MenuItem>
+                        ))
+                    }
 
 
 
-                    </Select>
-                </FormControl>
+                </Select>
+            </FormControl>
 
         </Paper>
     );

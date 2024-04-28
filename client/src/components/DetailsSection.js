@@ -19,7 +19,7 @@ import Paper from '@mui/material/Paper';
 
 const warningMessage = "There may be delays due to unforeseen circumstances. Please keep this in mind and plan accordingly.";
 
-const DetailsComponent = ({orderDetails }) => {
+const DetailsComponent = ({ orderDetails }) => {
   const IP_ADR = process.env.REACT_APP_IP_ADR;
 
   if (!orderDetails) {
@@ -30,11 +30,11 @@ const DetailsComponent = ({orderDetails }) => {
 
   return (
     <div className='details-container' >
-      
+
       <div className='details-header'>
 
         <TableContainer>
-        <h3>Order Details</h3>
+          <h3>Order Details</h3>
           <Table aria-label="order details" sx={{
             [`& .${tableCellClasses.root}`]: {
               borderBottom: "none"
@@ -62,14 +62,14 @@ const DetailsComponent = ({orderDetails }) => {
         </TableContainer>
         <div className="qr-code">
           <div className='qr-box'>
-            <QRCode value={`http://${IP_ADR}:3000/update/`+_id} size={128} level={"H"} />
+            <QRCode value={`http://${IP_ADR}:3000/update/` + _id} size={128} level={"H"} />
             <div className='qr-label'>Scan the QR code</div>
           </div>
         </div>
       </div>
 
       {/* Use the correct MUI Timeline components */}
-      <div className='delivery-timeline' style={{maxHeight:"450px", overflow:"auto"}}>
+      <div className='delivery-timeline' style={{ maxHeight: "450px", overflow: "auto" }}>
         <h3>Timeline</h3>
 
         <Timeline position='left'>
@@ -77,10 +77,10 @@ const DetailsComponent = ({orderDetails }) => {
             <TimelineItem key={index}>
               <TimelineOppositeContent style={{ maxWidth: "1px", paddingLeft: '0px', paddingRight: '0px' }} />
               <TimelineContent style={{ paddingRight: '16px', textAlign: 'right' }}>
-
-                {item.time}
+                {isNaN(new Date(item.time).getTime())
+                  ? '-'
+                  : new Date(item.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </TimelineContent>
-
               {/* Displaying time on the right side */}
               <TimelineContent style={{ flex: 1, textAlign: 'left' }}>
                 <p style={{ margin: 0, fontWeight: 'bold' }}>{item.name}</p>
@@ -95,16 +95,19 @@ const DetailsComponent = ({orderDetails }) => {
           ))}
         </Timeline>
       </div>
-
       <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: "2px" }}>
-
         <div className='delivery-status' style={{ marginBottom: "10px" }}>
           <h3>Delivery Status</h3>
           {deliveryStatus.map((status, index) => (
             <p key={index} className={status.state}>
-              {status.description} <span>{status.date}</span>
+              {status.description} <span>
+                {isNaN(new Date(status.date).getTime())
+                  ? '-'
+                  : new Date(status.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </span>
             </p>
           ))}
+
         </div>
 
         <div className='warning-section' style={{ height: "100%" }}>

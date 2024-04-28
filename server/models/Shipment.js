@@ -19,7 +19,7 @@ const ShipmentSchema = new mongoose.Schema({
     name: { type: String, required: true },
     status: { type: String, required: true },
     time: { type: String, required: true },
-    checkedby: { type: String, required: true }
+    checkedby: { type: String, required: true },
   }]
   // Add other relevant fields as needed
 });

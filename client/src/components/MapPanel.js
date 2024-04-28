@@ -41,6 +41,8 @@ function PanelComponent({ selectedMunicipality, setIsPanelOpen }) {
 
   function getSeverityColor(severity) {
     switch (severity) {
+        case 'Critical':
+            return '#b71c1c'; // darker red for critical severity
         case 'High':
             return '#d32f2f'; // red for high severity
         case 'Medium':
@@ -50,6 +52,8 @@ function PanelComponent({ selectedMunicipality, setIsPanelOpen }) {
         default:
             return '#757575'; // grey for unknown severity
     }
+
+
 }
 
   return (
@@ -115,7 +119,7 @@ function PanelComponent({ selectedMunicipality, setIsPanelOpen }) {
                 </Grid>
                 <Grid item xs={12}>
         <Typography variant="subtitle1" style={styles.label}>Alerts</Typography>
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {municipalityData.alerts.map((alert, index) => (
     <ListItem key={index}>
         <ListItemAvatar>

@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom'; // Import from react-router-dom
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Tracklist from '../components/TrackList';
-import Navbar from '../components/Navbar'; // Assuming you have this component
-import MapComponent from '../components/MapComponent'; // Import the MapComponent
-import DetailsComponent from '../components/DetailsSection'; // Import the DetailsComponent
-import { municipalities } from '../config/municipalitiesConfig'; // Adjust the path as needed
+import Navbar from '../components/Navbar';
+import MapComponent from '../components/MapComponent';
+import DetailsComponent from '../components/DetailsSection';
+import { municipalities } from '../config/municipalitiesConfig';
 import Loading from '../components/Loading';
 
 function UserProfile() {
-  const [placeholderOrderDetailsList, setOrderDetailsList] = useState([]);
+  const [orderDetailsList, setOrderDetailsList] = useState([]);
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+  const { id } = useParams();
   const IP_ADR = process.env.REACT_APP_IP_ADR;
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       setLoading(true);
       const token = localStorage.getItem('token');
       if (!token) {
@@ -29,20 +32,31 @@ function UserProfile() {
       }
 
       try {
-        const response = await axios.get(`http://${IP_ADR}:5000/api/shipments/get`);
-        setOrderDetailsList(response.data);
-        setSelectedShipment(response.data[0]); // Set the first item as selected shipment
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching data:', err);
+        const responseList = await axios.get(`http://${IP_ADR}:5000/api/shipments/get`);
+        setOrderDetailsList(responseList.data);
+        const shipmentToSelect = id ? responseList.data.find(s => s._id === id) : responseList.data[0];
+        setSelectedShipment(shipmentToSelect);
+
+        if (!shipmentToSelect) {
+          setMessage('No shipment found with the given ID.');
+          setOpenSnackbar(true);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
         setMessage('Failed to fetch data.');
         setOpenSnackbar(true);
+      } finally {
         setLoading(false);
       }
-    };
-
+    }
     fetchData();
-  }, [IP_ADR]);
+  }, [IP_ADR, id]);
+
+  useEffect(() => {
+    if (selectedShipment && !id) {
+      navigate(`/home/${selectedShipment._id}`); // Navigate using react-router
+    }
+  }, [selectedShipment, id, navigate]);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -52,9 +66,8 @@ function UserProfile() {
   };
 
   if (loading) {
-    return <Loading/>
+    return <Loading />;
   }
-
   return (
     <div>
       <div className='app-bar'>
@@ -63,7 +76,7 @@ function UserProfile() {
       <div className="user-profile-container">
         <div className='home-tracklist'>
           <Tracklist
-            orderDetailsList={placeholderOrderDetailsList}
+            orderDetailsList={orderDetailsList}
             onSelectShipment={setSelectedShipment}
           />
         </div>
@@ -112,6 +125,5 @@ function UserProfile() {
     </div>
   );
 }
-
 
 export default UserProfile;

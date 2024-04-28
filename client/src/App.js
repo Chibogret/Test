@@ -19,7 +19,7 @@ function App() {
           <div className="App">
             <Routes>
               <Route path="/" element={<FormContainer />} />
-              <Route path="/home" element={
+              <Route path="/home/:id?" element={
                 <ProtectedRoute>
                   <UserProfile />
                 </ProtectedRoute>

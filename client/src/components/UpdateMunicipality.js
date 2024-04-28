@@ -60,9 +60,7 @@ function UpdateMunicipalityModal({ open, handleClose }) {
     }, [itemsFromChild]);
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // Map the state to the structure of the Municipality schema
+                // Map the state to the structure of the Municipality schema
         const formData = {
             name: municipality,
             checkpoint: {

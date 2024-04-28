@@ -85,6 +85,7 @@ function MapComponent({ municipalities, statuses }) {
                 fillOpacity={0.8}
                 eventHandlers={{
                   click: () => handleMarkerClick(municipality),
+                  hover: () => handleMarkerClick(municipality)
                 }}
               >
                 <Popup>{municipality.name}</Popup>

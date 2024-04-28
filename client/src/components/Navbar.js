@@ -8,7 +8,7 @@ import { useLocation, Link } from 'react-router-dom'; // Import useLocation and 
 function Navbar() {
     const location = useLocation(); // Hook to get location object
 
-    const isHome = location.pathname === '/home'; // Check if the current path is '/home'
+    const isHome = location.pathname.startsWith('/home');
 
     // Function to toggle sidebar
     const toggleSidebar = () => {
