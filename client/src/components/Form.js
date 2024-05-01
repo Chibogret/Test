@@ -1,16 +1,34 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, CircularProgress } from '@mui/material';
+import { TextField, Button, Box, CircularProgress, MenuItem } from '@mui/material';
+import { municipalities } from '../config/municipalitiesConfig'; // Ensure this path is correct
 
-function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, password, setPassword, isLoading }) {
-    
-    console.log("form type" + formType)
-    console.log(localStorage.getItem('token'))
 
+function MaterialForm({
+    onToggleForm,
+    formType,
+    handleSubmit,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoading,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    role,
+    setRole,
+    municipality,
+    setMunicipality
+  }) {
+    console.log("form type: " + formType);
+    console.log(localStorage.getItem('token'));
+  
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
-
+  
     // Validation
     const emailRegex = new RegExp("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$");
 
@@ -39,10 +57,9 @@ function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, p
     };
 
     const toggleForm = () => {
-        // console.log(typeof onToggleForm);
-        onToggleForm(); // Use onToggleForm passed as prop
+        onToggleForm();
     };
-    // Styles
+
     const textFieldStyles = {
         label: {
             sx: {
@@ -55,7 +72,7 @@ function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, p
         input: {
             sx: {
                 '& .MuiInputBase-input': {
-                    padding: 1, // Removes padding
+                    padding: 1,
                     '&:hover fieldset': {
                         border: '1px solid primary!important',
                     },
@@ -115,13 +132,64 @@ function MaterialForm({ onToggleForm, formType, handleSubmit, email, setEmail, p
                 fullWidth
             />
 
+            {formType === 'Register' && (
+                <>
+                    <TextField
+                        label="First Name"
+                        placeholder="Enter your first name"
+                        variant="outlined"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        margin="normal"
+                        fullWidth
+                    />
+                    <TextField
+                        label="Last Name"
+                        placeholder="Enter your last name"
+                        variant="outlined"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        margin="normal"
+                        fullWidth
+                    />
+                    <TextField
+                        label="Role"
+                        select
+                        variant="outlined"
+                        style={{textAlign: 'left'}}
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        margin="normal"
+                        fullWidth
+                    >
+                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
+                    </TextField>
+                    <TextField
+                    style={{textAlign: 'left'}}
+                        label="Municipality"
+                        select
+                        variant="outlined"
+                        value={municipality}
+                        onChange={(e) => setMunicipality(e.target.value)}
+                        margin="normal"
+                        fullWidth
+                    >
+                        {municipalities.map((municipality) => (
+                                    <MenuItem key={municipality.id} value={municipality.name}>
+                                        {municipality.name}
+                                    </MenuItem>
+                                ))}
+                    </TextField>
+                </>
+            )}
+
             <Button type="submit" variant="contained" color="primary"
                 style={{ width: "100%", marginTop: "15px" }}
                 disabled={isLoading || !isEmailValid || !isPasswordValid || emailError || passwordError}>
                 {isLoading ? <CircularProgress size={24} /> : formType === 'Login' ? "Login" : 'Register'}
             </Button>
 
-            
             <Button color="primary" style={{ width: "100%", marginTop: "15px", fontSize: "10px" }}
                     onClick={toggleForm}>
                 {formType === 'Login' ? "Don't have an account? Register here." : 'Already have an account? Login here.'}

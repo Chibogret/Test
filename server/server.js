@@ -24,7 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/municipalities', municipalitiesRoutes)
 
 // Use the User Routes
-app.use('/api', userRoutes); // Update this to include '/users' to differentiate from other routes
+app.use('/api/user', userRoutes); // Update this to include '/users' to differentiate from other routes
 
 // Use the Shipment Routes
 app.use('/api/shipments', shipmentRoutes);

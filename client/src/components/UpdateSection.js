@@ -11,9 +11,15 @@ function UpdateConfirmation(props) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { id } = useParams();  // Correctly fetch id from the URL params
   const [inspector, setInspector] = useState('');
+  const [heads, setHead] = useState('');
   const [checkpoint, setCheckpoint] = useState('');
 
   const IP_ADR = process.env.REACT_APP_IP_ADR;
+
+  const handleHeadChange = (newHead) => {
+    setHead(newHead);
+    console.log('Head updated in Parent:', heads);
+  };
 
   const handleInspectorChange = (newInspector) => {
     setInspector(newInspector);
@@ -49,11 +55,26 @@ function UpdateConfirmation(props) {
 
     // Log for debugging; consider removing or replacing with more formal logging
     console.log('Submitting', { inspector, checkpoint });
-
+    
     try {
+      // Assuming shipmentdetails is available globally or passed as an argument
+      if (!shipmentDetails || !shipmentDetails.timeline || !shipmentDetails.timeline.some(entry => entry.name.toUpperCase() === checkpoint.toUpperCase())) {
+        event.preventDefault();
+        alert('Account not authorized to update this checkpoint.');
+        return;
+      }
+
+      const existingCheckpoint = shipmentDetails.timeline.find(entry => entry.name.toUpperCase() === checkpoint.toUpperCase());
+      if (existingCheckpoint.checkedby !== '-' || existingCheckpoint.currentHeads === 0) {
+        event.preventDefault();
+        alert('Checkpoint has already been checked by someone.');
+        return;
+      }
+
       const response = await axios.put(`http://${IP_ADR}:5000/api/shipments/update/${id}`, {
         inspector: inspector,
-        checkpointName: checkpoint,
+        checkpointName: checkpoint.toUpperCase(),
+        currentHeads: heads
       });
 
       // Assuming the response body has the success status and data
@@ -64,10 +85,12 @@ function UpdateConfirmation(props) {
         throw new Error('Failed to update shipment details');
       }
     } catch (error) {
+      event.preventDefault();      
       console.error('Update error:', error);
       alert('Error updating shipment details: ' + error.message);
     }
-  };
+};
+
 
   return (
     <div>
@@ -114,8 +137,8 @@ function UpdateConfirmation(props) {
               <Divider />
               <p style={{ textAlign: "left", fontWeight: "bold" }}>Authorization</p>
 
-              <InspectorForm onInspectorChange={handleInspectorChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange} />
-              <Button type="submit" variant="contained" color="primary" fullWidth disabled={checkpoint.length === 0}>
+              <InspectorForm onInspectorChange={handleInspectorChange} onHeadChange= {handleHeadChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange} />
+              <Button type="submit" variant="contained" color="primary" fullWidth>
                 Update              </Button>
             </>
           )}

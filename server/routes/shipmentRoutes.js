@@ -43,7 +43,8 @@ router.post('/register-shipment', async (req, res) => {
       name,
       status: index === 0 ? 'current' : 'pending', // Use ternary operator to check index
       time: '-',
-      checkedby: '-'
+      checkedby: '-',
+      currentHeads: 0
     }));
     
 
@@ -228,7 +229,7 @@ router.put('/update-shipment/:id', async (req, res) => {
 
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params;
-  const { inspector, checkpointName } = req.body;
+  const { inspector, checkpointName,currentHeads } = req.body;
 
   try {
     const shipment = await ShipmentTracking.findById(id);
@@ -259,6 +260,8 @@ router.put('/update/:id', async (req, res) => {
 
     shipment.timeline[selectedIndex].time = new Date().toISOString(); // Setting current time for completed items
     shipment.timeline[selectedIndex].checkedby = inspector;
+    shipment.timeline[selectedIndex].currentHeads = currentHeads;
+
 
     // Set the next status to current if there's another timeline entry
     if (selectedIndex + 1 < shipment.timeline.length) {

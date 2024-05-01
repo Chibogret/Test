@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
-import PanelComponent from './MapPanel';
+import PanelComponent from '../components/MapPanel';
 import 'leaflet/dist/leaflet.css';
 import '../style/mapComponent.css';
 

@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+
 const UserSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
-  // Add other relevant fields as needed
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true, index: true },
+  password: { type: String, required: true },
+  municipality: {
+    type: String,
+    required: true,
+    enum: ['San Teodoro', 'Calapan', 'Puerto Galera', 'San Jose', 'Baco', 'Naujan', 'Victoria', 'Pola', 'Socorro', 'Pinamalayan', 'Gloria', 'Bansud', 'Bongabong', 'Roxas', 'Mansalay', 'Bulalacao'], // List of municipalities in Mindoro
+    default: 'Calapan' // Default municipality
+  },
+  role: { type: String, required: true, default: 'user' }, // 'admin', 'user', etc.
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
 // Hash password before saving

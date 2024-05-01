@@ -1,49 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Paper } from '@mui/material';
+import { TextField, FormControl, InputLabel, Select, MenuItem, Paper } from '@mui/material';
+import axios from 'axios'; // Ensure axios is installed
 
-function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList = [], selectedCheckpoint }) {
+
+function InspectorForm({ onHeadChange, onInspectorChange, onCheckpointChange, checkpointList = [], selectedCheckpoint }) {
     const [inspector, setInspector] = useState('');
     const [checkpoint, setCheckpoint] = useState('');
+    const [heads, setHeads] = useState('');
+    const IP_ADR = process.env.REACT_APP_IP_ADR;
 
     useEffect(() => {
         if (selectedCheckpoint) {
-            setCheckpoint(selectedCheckpoint.name); // Assuming selectedCheckpoint is an object with a name
+            setCheckpoint(selectedCheckpoint.name);
         } else if (checkpointList.length > 0) {
-            setCheckpoint(checkpointList[0].name); // Use name instead of id
+            setCheckpoint(checkpointList[0].name);
         }
+        fetchInspectorData();
     }, [selectedCheckpoint, checkpointList]);
 
-    const handleInspectorChange = (event) => {
-        const newInspector = event.target.value;
-        setInspector(newInspector);
-        onInspectorChange(newInspector);
+    useEffect(() => {
+        onInspectorChange(inspector);
+    }, [inspector, onInspectorChange]);
+
+    useEffect(() => {
+        onCheckpointChange(checkpoint);
+    }, [checkpoint, onCheckpointChange]);
+
+    const fetchInspectorData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found in local storage.');
+                return;
+            }
+
+            const response = await axios.get(`http://${IP_ADR}:5000/api/user/userinfo`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const { firstName, lastName, municipality } = response.data;
+            setInspector(`${toTitleCase(firstName)} ${toTitleCase(lastName)}`);
+            setCheckpoint(municipality);
+        } catch (error) {
+            console.error('Failed to fetch inspector data:', error);
+        }
     };
 
-    const handleCheckpointChange = (event) => {
-        const newCheckpoint = event.target.value;
-        console.log(checkpoint)
-        setCheckpoint(newCheckpoint);
-        onCheckpointChange(newCheckpoint); // Notify the parent component of the change
-    };
+    const toTitleCase = (name) => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 
+    const handleHeadChange = (event) => {
+        const newHeads = event.target.value;
+        setHeads(newHeads);
+        onHeadChange(newHeads);
+    };
 
     return (
         <Paper className="inspector-form-container" elevation={0}>
-
             <TextField
+                style={{ marginBottom: "15px" }}
                 label="Authorized Inspector"
                 variant="outlined"
                 fullWidth
                 value={inspector}
-                onChange={handleInspectorChange}
-                margin="normal"
+                InputProps={{ readOnly: true }}
+                disabled
             />
-            <FormControl fullWidth style={{marginBottom:"15px"}} disabled={checkpointList.length === 0}>
-                <InputLabel>Checkpoint</InputLabel>
+            <TextField
+                style={{ marginBottom: "15px" }}
+                label="Checkpoint"
+                variant="outlined"
+                fullWidth
+                value={checkpoint}
+                InputProps={{ readOnly: true }}
+                disabled
+            />
+            <TextField
+                style={{ marginBottom: "15px" }}
+                label="Number of Heads"
+                variant="outlined"
+                fullWidth
+                type="number"
+                value={heads}
+                onChange={handleHeadChange}
+            />
+        </Paper>
+    );
+}
+            {/* <FormControl fullWidth style={{ marginBottom: "15px" }} disabled={checkpointList.length === 0}>
+                <InputLabel>Municipality</InputLabel>
                 <Select
-                    style={{ textAlign: "left" }}
                     value={checkpoint}
-                    label="Checkpoint"
+                    label="Municipality"
                     onChange={handleCheckpointChange}
                 >
                     {checkpointList.filter(checkpointItem =>
@@ -54,14 +101,7 @@ function InspectorForm({ onInspectorChange, onCheckpointChange, checkpointList =
                             </MenuItem>
                         ))
                     }
-
-
-
                 </Select>
-            </FormControl>
-
-        </Paper>
-    );
-}
+            </FormControl> */}
 
 export default InspectorForm;

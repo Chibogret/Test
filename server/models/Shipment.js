@@ -20,6 +20,7 @@ const ShipmentSchema = new mongoose.Schema({
     status: { type: String, required: true },
     time: { type: String, required: true },
     checkedby: { type: String, required: true },
+    currentHeads: { type: Number, required: true }
   }]
   // Add other relevant fields as needed
 });

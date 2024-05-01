@@ -8,6 +8,10 @@ import '../styles.css';
 function Register({ onToggleForm, formType }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [role, setRole] = useState('user'); // Default role
+    const [municipality, setMunicipality] = useState('Calapan'); // Default municipality
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -25,16 +29,22 @@ function Register({ onToggleForm, formType }) {
         }
         setIsLoading(true);
         try {
-            await axios.post(`http://${IP_ADR}:5000/api/auth/register`, { email, password });
+            await axios.post(`http://${IP_ADR}:5000/api/auth/register`, {
+                email,
+                password,
+                firstName,
+                lastName,
+                role,
+                municipality
+            });
             setErrorMessage('Registration successful. Please login.');
             setOpenSnackbar(true);
         } catch (error) {
-            if (error.response.data.message.includes('duplicate key error')) {
+            if (error.response && error.response.data.message.includes('duplicate key error')) {
                 setErrorMessage('Account already registered');
             } else {
                 setErrorMessage(error.response.data.message || 'Registration failed. Please try again.');
             }
-            
             setOpenSnackbar(true);
         } finally {
             setIsLoading(false);
@@ -56,8 +66,16 @@ function Register({ onToggleForm, formType }) {
                 setEmail={setEmail}
                 password={password}
                 setPassword={setPassword}
+                firstName={firstName}
+                setFirstName={setFirstName}
+                lastName={lastName}
+                setLastName={setLastName}
+                role={role}
+                setRole={setRole}
+                municipality={municipality}
+                setMunicipality={setMunicipality}
                 isLoading={isLoading}
-                formType="register"
+                formType="Register"
                 onToggleForm={onToggleForm}
             />
             <Snackbar
