@@ -225,11 +225,9 @@ router.put('/update-shipment/:id', async (req, res) => {
     console.error('Update shipment error:', error);
     res.status(500).json({ message: 'Failed to update shipment' });
   }
-});
-
-router.put('/update/:id', async (req, res) => {
+});router.put('/update/:id', async (req, res) => {
   const { id } = req.params;
-  const { inspector, checkpointName,currentHeads } = req.body;
+  const { inspector, checkpointName, currentHeads } = req.body;
 
   try {
     const shipment = await ShipmentTracking.findById(id);
@@ -240,8 +238,6 @@ router.put('/update/:id', async (req, res) => {
     const currentIndex = shipment.timeline.findIndex(item => item.status === 'current');
     const selectedIndex = shipment.timeline.findIndex(item => item.name === checkpointName);
 
-
-
     console.log(selectedIndex);
     console.log(checkpointName);
     console.log(currentIndex);
@@ -250,35 +246,34 @@ router.put('/update/:id', async (req, res) => {
       return res.status(404).send('Checkpoint not found');
     }
 
-    // Update all statuses up to and including the selected checkpoint
-    if (selectedIndex >= currentIndex) {
+    // Update the status to 'completed' if it was 'completed (skipped)', otherwise proceed as usual
+    if (shipment.timeline[selectedIndex].status === 'completed (skipped)') {
+      shipment.timeline[selectedIndex].status = 'completed';
+    } else if (selectedIndex >= currentIndex) {
       for (let index = currentIndex; index < selectedIndex; index++) {
-        shipment.timeline[index].status = 'completed (skipped)';
+        if (shipment.timeline[index].status !== 'completed (skipped)') {
+          shipment.timeline[index].status = 'completed (skipped)';
+        }
       }
       shipment.timeline[selectedIndex].status = 'completed';
     }
 
-    shipment.timeline[selectedIndex].time = new Date().toISOString(); // Setting current time for completed items
+    shipment.timeline[selectedIndex].time = new Date().toISOString();
     shipment.timeline[selectedIndex].checkedby = inspector;
     shipment.timeline[selectedIndex].currentHeads = currentHeads;
 
-
-    // Set the next status to current if there's another timeline entry
-    if (selectedIndex + 1 < shipment.timeline.length) {
+    // Do not update the status to 'current' for subsequent entries if they are completed (skipped)
+    if (selectedIndex + 1 < shipment.timeline.length && shipment.timeline[selectedIndex + 1].status !== 'completed' && shipment.timeline[selectedIndex + 1].status !== 'completed (skipped)') {
       shipment.timeline[selectedIndex + 1].status = 'current';
     } 
-    
-    // Correct the comparison operator to '==='
-if (shipment.deliveryStatus[1].date === '-') {
-  shipment.deliveryStatus[1].date = new Date().toISOString();
-}
 
-// Similarly, ensure the operation for the last timeline index uses the correct date setting
-if (selectedIndex === shipment.timeline.length - 1) {
-  shipment.deliveryStatus[2].date = new Date().toISOString();
-}
-
-    
+    // Update delivery status dates correctly
+    if (shipment.deliveryStatus[1].date === '-') {
+      shipment.deliveryStatus[1].date = new Date().toISOString();
+    }
+    if (selectedIndex === shipment.timeline.length - 1) {
+      shipment.deliveryStatus[2].date = new Date().toISOString();
+    }
 
     await shipment.save();
     res.status(200).json({
@@ -293,6 +288,7 @@ if (selectedIndex === shipment.timeline.length - 1) {
     });
   }
 });
+
 
 
 module.exports = router;

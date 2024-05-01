@@ -76,7 +76,7 @@ function Register({ onToggleForm, formType }) {
                 setMunicipality={setMunicipality}
                 isLoading={isLoading}
                 formType="Register"
-                onToggleForm={onToggleForm}
+                // onToggleForm={onToggleForm}
             />
             <Snackbar
                 open={openSnackbar}

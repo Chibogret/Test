@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
   municipality: {
     type: String,
     required: true,
-    enum: ['San Teodoro', 'Calapan', 'Puerto Galera', 'San Jose', 'Baco', 'Naujan', 'Victoria', 'Pola', 'Socorro', 'Pinamalayan', 'Gloria', 'Bansud', 'Bongabong', 'Roxas', 'Mansalay', 'Bulalacao'], // List of municipalities in Mindoro
+    enum: ['San Teodoro', 'Calapan City', 'Puerto Galera', 'San Jose', 'Baco', 'Naujan', 'Victoria', 'Pola', 'Socorro', 'Pinamalayan', 'Gloria', 'Bansud', 'Bongabong', 'Roxas', 'Mansalay', 'Bulalacao'], // List of municipalities in Mindoro
     default: 'Calapan' // Default municipality
   },
   role: { type: String, required: true, default: 'user' }, // 'admin', 'user', etc.

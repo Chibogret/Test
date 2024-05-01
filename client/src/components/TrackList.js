@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, Divider, TextField } from '@mui/material';
 import ShipmentModal from './ShipmentModal'; // Adjust the path as necessary
 import UpdateMunicipalityModal from './UpdateMunicipality';
+import RegisterUserForm from './RegisterUserForm';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
 import axios from 'axios'; // Make sure to import axios at the top of your file
@@ -17,11 +18,15 @@ function Tracklist() {
   const [orderDetailsList, setOrderDetailsList] = useState([]);
   const [open, setOpen] = useState(false);
   const [openM, setMOpen] = useState(false);
+  const [openU, setUOpen] = useState(false);
+
   const navigate = useNavigate();
 
   // Function to handle opening and closing modals
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleUserOpen = () => setUOpen(true);
+  const handleUserClose = () => setUOpen(false);
   const handleMunicipalityOpen = () => setMOpen(true);
   const handleMunicipalityClose = () => setMOpen(false);
 
@@ -52,10 +57,13 @@ const fetchData = async () => {
     }
   }, [searchQuery]);
 
+
   return (
     <div className='sidebar' style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
+      <Button className="registerButton" onClick={handleUserOpen}>Register User</Button>
       <Button className="registerButton" onClick={handleOpen}>Register Shipment</Button>
       <Button className="registerButton" onClick={handleMunicipalityOpen}>Update Municipality</Button>
+      <RegisterUserForm openU={openU} handleUserClose={handleUserClose} />
       <ShipmentModal open={open} handleClose={handleClose} />
       <UpdateMunicipalityModal open={openM} handleClose={handleMunicipalityClose} />
       <Divider/>

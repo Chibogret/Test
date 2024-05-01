@@ -85,7 +85,7 @@ function MaterialForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} noValidate autoComplete="off" className='registration-form'>
+        <form onSubmit={handleSubmit} noValidate autoComplete="off">
             <Box
                 component="div"
                 sx={{
@@ -94,7 +94,7 @@ function MaterialForm({
                     fontWeight: 'bold',
                 }}
             >
-                {formType === 'Login' ? 'Login to your account' : 'Create your account'}
+                {formType === 'Login' ? 'Login to your account' : 'Create an account'}
             </Box>
 
             <TextField
@@ -190,10 +190,16 @@ function MaterialForm({
                 {isLoading ? <CircularProgress size={24} /> : formType === 'Login' ? "Login" : 'Register'}
             </Button>
 
-            <Button color="primary" style={{ width: "100%", marginTop: "15px", fontSize: "10px" }}
-                    onClick={toggleForm}>
-                {formType === 'Login' ? "Don't have an account? Register here." : 'Already have an account? Login here.'}
-            </Button>
+            <Button 
+  color="primary" 
+  style={{ width: "100%", marginTop: "15px", fontSize: "10px" }}
+//   onClick={toggleForm} 
+//   disabled={formType === 'Login'}
+disabled
+>
+  {formType === 'Login' ? "Need an Account? Contact the Administrator" : 'Created Account will be able to modify assigned checkpoints.'}
+</Button>
+
         </form>
     );
 }
