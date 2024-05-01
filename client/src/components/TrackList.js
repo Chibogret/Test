@@ -57,7 +57,6 @@ const fetchData = async () => {
     }
   }, [searchQuery]);
 
-
   return (
     <div className='sidebar' style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
       <Button className="registerButton" onClick={handleUserOpen}>Register User</Button>
@@ -75,26 +74,27 @@ const fetchData = async () => {
         className="searchBar"
         style={{ marginBottom: '10px' }}
       />
-      {orderDetailsList.map((orderDetails, index) => (
-        <Card 
-          key={index} 
-          variant="outlined" 
-          onClick={() => handleSelectShipment(orderDetails._id)}
-        >
-          <CardActionArea>
-            <CardContent>
-              <Typography gutterBottom variant="h8" component="div">
-                {orderDetails.origin} to {orderDetails.destination}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Date: {orderDetails.dateIssued}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      ))}
+      <div style={{ height: '100%', overflowY: 'auto' }}>
+        {orderDetailsList.map((orderDetails, index) => (
+          <Card 
+            key={index} 
+            variant="outlined" 
+            onClick={() => handleSelectShipment(orderDetails._id)}
+          >
+            <CardActionArea>
+              <CardContent>
+                <Typography gutterBottom variant="h8" component="div">
+                  {orderDetails.origin} to {orderDetails.destination}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Date: {orderDetails.dateIssued}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        ))}
+      </div>
     </div>
   );
-}
-
+}     
 export default Tracklist;

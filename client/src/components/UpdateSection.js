@@ -67,7 +67,7 @@ function UpdateConfirmation(props) {
       const existingCheckpoint = shipmentDetails.timeline.find(entry => entry.name.toUpperCase() === checkpoint.toUpperCase());
       if (existingCheckpoint.checkedby !== '-' || !existingCheckpoint.currentHeads === 0) {
         event.preventDefault();
-        alert('Checkpoint has already been checked by someone.');
+        alert(`Checkpoint has already been checked by `+ existingCheckpoint.checkedby +'.');
         return;
       }
 

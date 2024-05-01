@@ -16,6 +16,7 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import WarningSection from './WarningSection';
 
 const warningMessage = "There may be delays due to unforeseen circumstances. Please keep this in mind and plan accordingly.";
 
@@ -26,7 +27,7 @@ const DetailsComponent = ({ orderDetails }) => {
     return <div>No details available</div>;
   }
 
-  const { dateIssued, timeIssued, rasAsf, aic, deliveryStatus, timeline, _id } = orderDetails;
+  const { dateIssued, timeIssued, numberOfHeads, rasAsf, aic, deliveryStatus, timeline, _id } = orderDetails;
 
   return (
     <div className='details-container' >
@@ -48,6 +49,10 @@ const DetailsComponent = ({ orderDetails }) => {
               <TableRow>
                 <TableCell component="th" scope="row"><strong>Time Issued:</strong></TableCell>
                 <TableCell>{timeIssued}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row"><strong>Number of Heads:</strong></TableCell>
+                <TableCell>{numberOfHeads}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row"><strong>RAS-ASF Control No.:</strong></TableCell>
@@ -111,8 +116,7 @@ const DetailsComponent = ({ orderDetails }) => {
         </div>
 
         <div className='warning-section' style={{ height: "100%" }}>
-          <h3>Warning</h3>
-          <p>{warningMessage}</p>
+          <WarningSection details={orderDetails} />
         </div>
       </div>
 

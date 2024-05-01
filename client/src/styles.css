@@ -38,7 +38,7 @@
 
 
 .home-tracklist {
-  z-index: 10;
+  z-index: 100;
   background-color: white;
   position: absolute;
   top: 55px;
@@ -262,5 +262,7 @@
   border-radius: 5px;
   text-align: left;
   color: #666;
+  max-height: 400px;
+  overflow: auto;
 }
 
