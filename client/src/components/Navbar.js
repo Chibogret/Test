@@ -35,8 +35,10 @@ function Navbar() {
                         )}
                     </div>
                 </Typography>
+                {location.pathname !== '/dashboard' && (
 
-                <Button color="inherit">Login</Button>
+                <Button color="inherit" href="/dashboard">Go to Dashboard</Button>
+                )}
             </Toolbar>
         </AppBar>
     );

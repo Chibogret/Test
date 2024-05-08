@@ -20,9 +20,21 @@ router.post('/register-shipment', async (req, res) => {
 
     console.log(req.body);
 
-    const currentDate = new Date();
-    const dateIssued = currentDate.toISOString().split('T')[0];
-    const timeIssued = currentDate.toISOString();
+    const philippinesOffset = 8; // UTC+8 for Philippines
+
+    // Assuming you fetch the current UTC time accurately from an online API:
+    const currentUtcTime = new Date(new Date().toUTCString()); // Simulate getting UTC time
+
+    // Convert UTC to Philippines time
+    const philippinesTime = new Date(currentUtcTime.getTime() + (3600000 * philippinesOffset));
+
+    // Extract the date and time in ISO format
+    const dateIssued = philippinesTime.toISOString().split('T')[0];
+    const timeIssued = philippinesTime.toISOString();
+
+    console.log("Date Issued: ", dateIssued);
+    console.log("Time Issued: ", timeIssued);
+
 
     const municipalityOrder = ['PUERTO GALERA', 'SAN TEODORO', 'BACO', 'CALAPAN CITY', 'NAUJAN', 'VICTORIA', 'SOCORRO', 'POLA', 'PINAMALAYAN', 'GLORIA', 'BANSUD', 'BONGABONG', 'ROXAS', 'MANSALAY', 'BULALACAO'];
 
@@ -47,7 +59,7 @@ router.post('/register-shipment', async (req, res) => {
       checkedby: '-',
       currentHeads: 0
     }));
-    
+
 
     const newShipment = new ShipmentTracking({
       livestockHandlerName,
@@ -151,12 +163,11 @@ router.get('/get/:id', async (req, res) => {
 
 router.get('/latest', async (req, res) => {
   try {
-    // Assuming 'createdAt' is the timestamp field used to store entry creation time
     const latestShipments = await ShipmentTracking.find()
-      .sort({ createdAt: -1 }) // Sort by createdAt in descending order (newest first)
-      .limit(5); // Limit the results to the 5 latest entries
+      .sort({ timeIssued: -1 }) // Sort by createdAt in descending order (newest first)
+      .limit(15);
 
-    res.json(latestShipments); // Send the latest order details as JSON
+    res.json(latestShipments);
   } catch (error) {
     console.error('Error fetching latest orders:', error);
     res.status(500).json({ message: 'Failed to fetch latest orders.' });
@@ -204,30 +215,7 @@ router.get('/details/:id', async (req, res) => {
 });
 
 
-
-router.put('/update-shipment/:id', async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body; // All updated fields are expected to be in the request body
-
-  try {
-    // Find the shipment by ID and update it
-    const updatedShipment = await Shipment.findByIdAndUpdate(id, {
-      $set: updateData
-    }, { new: true }); // "new: true" ensures the method returns the document after update
-
-    if (!updatedShipment) {
-      return res.status(404).json({ message: 'Shipment not found' });
-    }
-
-    res.json({
-      message: 'Shipment updated successfully',
-      data: updatedShipment
-    });
-  } catch (error) {
-    console.error('Update shipment error:', error);
-    res.status(500).json({ message: 'Failed to update shipment' });
-  }
-});router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   const { id } = req.params;
   const { inspector, checkpointName, currentHeads } = req.body;
 
@@ -260,21 +248,33 @@ router.put('/update-shipment/:id', async (req, res) => {
       shipment.timeline[selectedIndex].status = 'completed';
     }
 
-    shipment.timeline[selectedIndex].time = new Date().toISOString();
+
+    const philippinesOffset = 8; // UTC+8 for Philippines
+
+    // Assuming you fetch the current UTC time accurately from an online API:
+    const currentUtcTime = new Date(new Date().toUTCString()); // Simulate getting UTC time
+
+    // Convert UTC to Philippines time
+    const philippinesTime = new Date(currentUtcTime.getTime() + (3600000 * philippinesOffset));
+
+    // Extract the date and time in ISO format
+    const dateIssued = philippinesTime.toISOString();
+
+    shipment.timeline[selectedIndex].time = dateIssued;
     shipment.timeline[selectedIndex].checkedby = inspector;
     shipment.timeline[selectedIndex].currentHeads = currentHeads;
 
     // Do not update the status to 'current' for subsequent entries if they are completed (skipped)
     if (selectedIndex + 1 < shipment.timeline.length && shipment.timeline[selectedIndex + 1].status !== 'completed' && shipment.timeline[selectedIndex + 1].status !== 'completed (skipped)') {
       shipment.timeline[selectedIndex + 1].status = 'current';
-    } 
+    }
 
     // Update delivery status dates correctly
     if (shipment.deliveryStatus[1].date === '-') {
-      shipment.deliveryStatus[1].date = new Date().toISOString();
+      shipment.deliveryStatus[1].date = dateIssued;
     }
     if (selectedIndex === shipment.timeline.length - 1) {
-      shipment.deliveryStatus[2].date = new Date().toISOString();
+      shipment.deliveryStatus[2].date = dateIssued;
     }
 
     await shipment.save();

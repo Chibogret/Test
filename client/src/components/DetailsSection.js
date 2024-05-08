@@ -20,6 +20,15 @@ import WarningSection from './WarningSection';
 
 const warningMessage = "There may be delays due to unforeseen circumstances. Please keep this in mind and plan accordingly.";
 
+function formatDateTime(dateTime, type) {
+  const adjustedDateTime = new Date(new Date(dateTime).getTime() - 8 * 60 * 60 * 1000);
+  if (type === 'date') {
+    return adjustedDateTime.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  } else if (type === 'time') {
+    return adjustedDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+}
+
 const DetailsComponent = ({ orderDetails }) => {
   const IP_ADR = process.env.REACT_APP_IP_ADR;
 
@@ -44,11 +53,11 @@ const DetailsComponent = ({ orderDetails }) => {
             <TableBody >
               <TableRow>
                 <TableCell component="th" scope="row"><strong>Date Issued:</strong></TableCell>
-                <TableCell>{dateIssued}</TableCell>
+                <TableCell>{formatDateTime(timeIssued, "date")}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row"><strong>Time Issued:</strong></TableCell>
-                <TableCell>{timeIssued}</TableCell>
+                <TableCell>{formatDateTime(timeIssued, "time")}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row"><strong>Number of Heads:</strong></TableCell>
@@ -84,7 +93,7 @@ const DetailsComponent = ({ orderDetails }) => {
               <TimelineContent style={{ paddingRight: '16px', textAlign: 'right' }}>
                 {isNaN(new Date(item.time).getTime())
                   ? '-'
-                  : new Date(item.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  : formatDateTime(item.time, "time")}
               </TimelineContent>
               {/* Displaying time on the right side */}
               <TimelineContent style={{ flex: 1, textAlign: 'left' }}>

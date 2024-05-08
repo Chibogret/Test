@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Navbar from '../components/Navbar';
 import Dashboard from '../components/Overview'; // Ensure this is correctly imported
 import { CircularProgress, Box } from '@mui/material';
 import axios from 'axios';
@@ -21,7 +22,7 @@ const DashboardPage = () => {
       setLoading(true);
       try {
         // Fetch shipments data
-        const shipmentResponse = await axios.get(`http://${IP_ADR}:5000/api/shipments/get`);
+        const shipmentResponse = await axios.get(`http://${IP_ADR}:5000/api/shipments/latest`);
         console.log(shipmentResponse.data)
         const shipmentsData = shipmentResponse.data; // Adjust this if the data structure is different
 
@@ -63,8 +64,15 @@ const DashboardPage = () => {
   }
 
   return (
+    
     <div>
-      <Dashboard shipments={data.shipments} users={data.users} municipalities={data.municipalities} alerts={data.alerts} />
+      <div className='app-bar'>
+        <Navbar />
+      </div>
+      <div style={{display:"flex", overflow:"auto" }}>
+              <Dashboard shipments={data.shipments} users={data.users} municipalities={data.municipalities} alerts={data.alerts} />
+
+      </div>
     </div>
   );
 };
