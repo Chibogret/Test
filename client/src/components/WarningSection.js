@@ -19,7 +19,7 @@ const theme = createTheme({
     MuiListItemText: {
       styleOverrides: {
         root: {
-          color: '#333', // General text color for list items
+          color: '#ddd', // General text color for list items
         },
       },
     },
@@ -58,7 +58,7 @@ const WarningSection = ({ details }) => {
       warning = `Discrepancy at ${checkpointName} checkpoint: Expected ${numberOfHeads}, found ${checkpoint.currentHeads}.`;
     }
     return warning && (
-      <ListItem key={index} style={{ backgroundColor: warning.includes('skipped') ? '#f9f9f9' : '#ffc2c2 ' }}>
+      <ListItem key={index} style={{ backgroundColor: warning.includes('skipped') ? '#f9f9f9' : '#ffc2c2 ', borderRadius: "15px", boxShadow: "0px 2px #888888" }}>
         <ListItemText primary={warning} />
       </ListItem>
     );

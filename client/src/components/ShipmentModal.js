@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Modal, Box, Typography, Select, MenuItem, TextField, Button } from '@mui/material';
 import { municipalities } from '../config/municipalitiesConfig'; // Ensure this path is correct
 import axios from 'axios';
@@ -25,20 +25,46 @@ function ShipmentTrackingModal({ open, handleClose }) {
     const [numberOfHeads, setNumberOfHeads] = useState('');
     const [rasAsfControlNumber, setRasAsfControlNumber] = useState('');
     const [aicControlNumber, setAicControlNumber] = useState('');
+    const [inspector, setInspector] = useState('');
 
     const IP_ADR = process.env.REACT_APP_IP_ADR;
 
-    // Enhanced handleSubmit function
+    const fetchInspectorData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found in local storage.');
+                return;
+            }
+
+            const response = await axios.get(`http://${IP_ADR}:5000/api/user/userinfo`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const { firstName, lastName, municipality } = response.data;
+            setInspector(`${toTitleCase(firstName)} ${toTitleCase(lastName)}`);
+        } catch (error) {
+            console.error('Failed to fetch inspector data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchInspectorData();
+    }, []);
+
+    const toTitleCase = (name) => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
+
     const handleSubmit = async (event) => {
         // Convert numberOfHeads to a number to ensure proper data type is sent
         const numericNumberOfHeads = parseInt(numberOfHeads, 10);
-
+    
         // Simple form validation check
-        if (!livestockHandler || !plateNumber || !origin || !destination || isNaN(numericNumberOfHeads) || !rasAsfControlNumber || !aicControlNumber) {
+        if (!livestockHandler || !plateNumber || !origin || !destination || isNaN(numericNumberOfHeads) || !rasAsfControlNumber || !aicControlNumber || !inspector) {
             alert('Please fill in all required fields correctly.');
             return; // Stop the submission if validation fails
         }
-
+    
         const shipmentData = {
             livestockHandlerName: livestockHandler,
             plateNumber: plateNumber,
@@ -46,11 +72,12 @@ function ShipmentTrackingModal({ open, handleClose }) {
             destination: destination,
             numberOfHeads: numericNumberOfHeads, // Use the converted number
             rasAsfControlNumber: rasAsfControlNumber,
-            aicControlNumber: aicControlNumber
+            aicControlNumber: aicControlNumber,
+            issuedBy: inspector // Assign the inspector name
         };
-
-        console.log(shipmentData)
-
+    
+        console.log(shipmentData);
+    
         try {
             const response = await axios.post(`http://${IP_ADR}:5000/api/shipments/register-shipment`, shipmentData);
             console.log(response.data);
@@ -62,6 +89,7 @@ function ShipmentTrackingModal({ open, handleClose }) {
             alert('Error submitting shipment data. Please try again.'); // Consider using a more user-friendly error display method
         }
     };
+
 
     return (
         <Modal

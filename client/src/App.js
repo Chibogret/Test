@@ -10,6 +10,7 @@ import UpdateConfirmation from './pages/UpdateDetails'; // Import the new Update
 import theme from './style/theme';
 import './styles.css';
 import './App.css';
+import DashboardPage from './pages/Overview';
 
 function App() {
   return (
@@ -27,6 +28,11 @@ function App() {
               <Route path="/update/:id" element={
                 <ProtectedRoute>
                   <UpdateConfirmation />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardPage />
                 </ProtectedRoute>
               } />
 

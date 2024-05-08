@@ -15,6 +15,7 @@ router.post('/register-shipment', async (req, res) => {
       numberOfHeads,
       rasAsfControlNumber,
       aicControlNumber,
+      issuedBy
     } = req.body;
 
     console.log(req.body);
@@ -63,7 +64,8 @@ router.post('/register-shipment', async (req, res) => {
         { description: 'In Transit', date: '-', state: 'inTransit' },
         { description: 'Delivered', date: '-', state: 'delivered' }
       ],
-      timeline
+      timeline,
+      issuedBy
     });
 
     await newShipment.save();
