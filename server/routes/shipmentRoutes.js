@@ -21,45 +21,47 @@ router.post('/register-shipment', async (req, res) => {
     console.log(req.body);
 
     const philippinesOffset = 8; // UTC+8 for Philippines
-
-    // Assuming you fetch the current UTC time accurately from an online API:
     const currentUtcTime = new Date(new Date().toUTCString()); // Simulate getting UTC time
-
-    // Convert UTC to Philippines time
     const philippinesTime = new Date(currentUtcTime.getTime() + (3600000 * philippinesOffset));
-
-    // Extract the date and time in ISO format
     const dateIssued = philippinesTime.toISOString().split('T')[0];
     const timeIssued = philippinesTime.toISOString();
 
     console.log("Date Issued: ", dateIssued);
     console.log("Time Issued: ", timeIssued);
 
-
     const municipalityOrder = ['PUERTO GALERA', 'SAN TEODORO', 'BACO', 'CALAPAN CITY', 'NAUJAN', 'VICTORIA', 'SOCORRO', 'POLA', 'PINAMALAYAN', 'GLORIA', 'BANSUD', 'BONGABONG', 'ROXAS', 'MANSALAY', 'BULALACAO'];
-
-    // Find indexes of origin and destination
     const originIndex = municipalityOrder.findIndex(name => name === origin.toUpperCase());
     const destinationIndex = municipalityOrder.findIndex(name => name === destination.toUpperCase());
 
-    // Determine the direction and slice the array accordingly
     let path;
     if (originIndex <= destinationIndex) {
-      // If destination is after origin in the list
       path = municipalityOrder.slice(originIndex, destinationIndex + 1);
     } else {
-      // If origin is after the destination, implying a reverse path
       path = municipalityOrder.slice(destinationIndex, originIndex + 1).reverse();
+    }
+
+    // Insert SOCORRO if POLA is origin or destination and PINAMALAYAN is in the timeline
+    const polaIndex = path.indexOf('POLA');
+    const pinamalayanIndex = path.indexOf('PINAMALAYAN');
+    if (polaIndex !== -1 && pinamalayanIndex !== -1) {
+      const socorroIndex = path.indexOf('SOCORRO');
+      if (socorroIndex === -1) { // Only insert if SOCORRO isn't already in the path
+        const insertIndex = Math.min(polaIndex, pinamalayanIndex) + 1;
+        path.splice(insertIndex, 0, 'SOCORRO');
+      }
+    }
+
+    if (origin.toUpperCase() !== 'POLA' && destination.toUpperCase() !== 'POLA') {
+      path = path.filter(place => place !== 'POLA');
     }
 
     const timeline = path.map((name, index) => ({
       name,
-      status: index === 0 ? 'current' : 'pending', // Use ternary operator to check index
+      status: index === 0 ? 'current' : 'pending',
       time: '-',
       checkedby: '-',
       currentHeads: 0
     }));
-
 
     const newShipment = new ShipmentTracking({
       livestockHandlerName,
@@ -87,6 +89,7 @@ router.post('/register-shipment', async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 });
+
 
 
 router.get('/get', async (req, res) => {
@@ -288,6 +291,98 @@ router.put('/update/:id', async (req, res) => {
       message: 'Error updating shipment',
       error: error.message
     });
+  }
+});
+
+const moment = require('moment'); // Assuming moment.js is used for date manipulation
+
+router.get('/dashboard-overview', async (req, res) => {
+  try {
+    const today = moment().startOf('day').toISOString(); // Start of today
+    const tomorrow = moment().add(1, 'days').startOf('day').toISOString(); // Start of tomorrow
+
+    // Fetching total number of shipments
+    const totalShipments = await ShipmentTracking.countDocuments();
+
+    // Aggregation pipeline for completed shipments and total livestock delivered
+    const completedShipmentsDetails = await ShipmentTracking.aggregate([
+      { $unwind: "$deliveryStatus" },
+      {
+        $match: {
+          'deliveryStatus.state': 'delivered',
+          'deliveryStatus.date': { $ne: "-" }
+        }
+      },
+      {
+        $project: {
+          numberOfHeads: 1,
+          dateIssued: { $dateFromString: { dateString: "$dateIssued" }},
+          deliveryDate: { $dateFromString: { dateString: "$deliveryStatus.date" }}
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+          totalDeliveredLivestock: { $sum: "$numberOfHeads" },
+          totalDeliveryTime: { $sum: { $subtract: ["$deliveryDate", "$dateIssued"] }}
+        }
+      },
+      {
+        $project: {
+          count: 1,
+          totalDeliveredLivestock: 1,
+          averageDeliveryTime: { $divide: ["$totalDeliveryTime", "$count"] }
+        }
+      }
+    ]);
+
+    // Fetching unique issuers for today
+    const issuersToday = await ShipmentTracking.aggregate([
+      {
+        $match: {
+          dateIssued: { $gte: today, $lt: tomorrow }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          uniqueIssuers: { $addToSet: "$issuedBy" } // Using addToSet to ensure uniqueness
+        }
+      }
+    ]);
+
+    const uniqueIssuers = issuersToday.length > 0 ? issuersToday[0].uniqueIssuers : [];
+
+    const totalCompleted = completedShipmentsDetails.length > 0 ? completedShipmentsDetails[0].count : 0;
+    const totalDeliveredLivestock = completedShipmentsDetails.length > 0 ? completedShipmentsDetails[0].totalDeliveredLivestock : 0;
+    const averageDeliveryTime = completedShipmentsDetails.length > 0 ? completedShipmentsDetails[0].averageDeliveryTime : 0;
+    const totalActive = totalShipments - totalCompleted; // Calculate active shipments as total minus completed
+
+    // Fetching total number of livestock across all shipments
+    const livestockTotal = await ShipmentTracking.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalHeads: { $sum: "$numberOfHeads" }
+        }
+      }
+    ]);
+
+    const totalLivestock = livestockTotal.length > 0 ? livestockTotal[0].totalHeads : 0;
+
+    // Respond with a JSON object that includes all data
+    res.json({
+      totalShipments,
+      activeShipments: totalActive,
+      completedShipments: totalCompleted,
+      totalLivestock,
+      totalDeliveredLivestock,
+      averageDeliveryTime: averageDeliveryTime / (1000 * 60 * 60 * 24), // Convert milliseconds to days
+      issuersToday: uniqueIssuers
+    });
+  } catch (error) {
+    res.status(500).send('Error fetching dashboard data: ' + error.message);
   }
 });
 

@@ -85,6 +85,8 @@ function ShipmentTrackingModal({ open, handleClose }) {
             // Optionally, reset form state here if the modal will be reused
         } catch (error) {
             console.error('Error submitting shipment data', error);
+            event.preventDefault();
+
             // Provide user feedback on error
             alert('Error submitting shipment data. Please try again.'); // Consider using a more user-friendly error display method
         }

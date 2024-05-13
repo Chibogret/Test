@@ -14,6 +14,8 @@ const DashboardPage = () => {
     municipalities: [],
     alerts: []
   });
+  const [users, setUser] = useState(null)
+  const [shipment_overview, setOverview] = useState(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,11 +23,31 @@ const DashboardPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found in local storage.');
+          return;
+        }
         // Fetch shipments data
         const shipmentResponse = await axios.get(`http://${IP_ADR}:5000/api/shipments/latest`);
+        const shipmentOverview = await axios.get(`http://${IP_ADR}:5000/api/shipments/dashboard-overview`);
+        const usersResponse = await axios.get(`http://${IP_ADR}:5000/api/user/userinfo`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const listOfUsers = await axios.get(`http://${IP_ADR}:5000/api/user/get`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const municipalityResponse = await axios.get(`http://${IP_ADR}:5000/api/municipalities/dashboard`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        console.log(municipalityResponse.data)
+        console.log(listOfUsers.data)
+        console.log(usersResponse.data)
+        console.log(shipmentOverview.data)
         console.log(shipmentResponse.data)
         const shipmentsData = shipmentResponse.data; // Adjust this if the data structure is different
-
+        setUser(listOfUsers.data)
+        setOverview(shipmentOverview.data)
         // Assuming you also have endpoints to fetch users, municipalities, and alerts
         // const usersResponse = await axios.get(`http://${IP_ADR}:5000/api/users/get`);
         // const municipalitiesResponse = await axios.get(`http://${IP_ADR}:5000/api/municipalities/get`);
@@ -64,13 +86,13 @@ const DashboardPage = () => {
   }
 
   return (
-    
+
     <div>
       <div className='app-bar'>
         <Navbar />
       </div>
-      <div style={{display:"flex", overflow:"auto" }}>
-              <Dashboard shipments={data.shipments} users={data.users} municipalities={data.municipalities} alerts={data.alerts} />
+      <div style={{ display: "flex", overflow: "auto" }}>
+        <Dashboard shipments={data.shipments} overview={shipment_overview} users={users} municipalities={data.municipalities} alerts={data.alerts} />
 
       </div>
     </div>

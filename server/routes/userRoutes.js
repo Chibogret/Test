@@ -39,6 +39,18 @@ router.get('/userinfo', auth, async (req, res) => {
   }
 });
 
+router.get('/get', auth, async (req, res) => {
+  try {
+    // Fetch only specific fields for all users
+    const users = await User.find({}, { firstName: 1, email: 1, lastName: 1, municipality: 1 });
+    res.json(users); // Send the user details as JSON
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ message: 'Failed to fetch user details.' });
+  }
+});
+
+
 
 
 // More user-specific routes here

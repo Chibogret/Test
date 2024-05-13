@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar';
 import InspectorForm from './InspectorForm';
 import '../style/updateconfirmation.css';
 
+import ConfirmationModal from './ConfirmationModal';
+
 function UpdateConfirmation(props) {
   const { shipmentDetails } = props;  // Destructure shipmentDetails from props
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -13,6 +15,21 @@ function UpdateConfirmation(props) {
   const [inspector, setInspector] = useState('');
   const [heads, setHead] = useState('');
   const [checkpoint, setCheckpoint] = useState('');
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleConfirmAction = () => {
+    handleSubmit();
+    handleCloseModal();
+  };
 
   const IP_ADR = process.env.REACT_APP_IP_ADR;
 
@@ -42,54 +59,40 @@ function UpdateConfirmation(props) {
 
 
   const handleSubmit = async (event) => {
-    // Validate input fields before submitting
+    event.preventDefault();  // Prevent default form submission behavior
     if (!inspector || inspector.trim() === '') {
       alert('Inspector name is required');
       return;
     }
-
     if (!checkpoint || checkpoint.trim() === '') {
       alert('Checkpoint is required');
       return;
     }
-
-    // Log for debugging; consider removing or replacing with more formal logging
-    console.log('Submitting', { inspector, checkpoint });
-    
     try {
-      // Assuming shipmentdetails is available globally or passed as an argument
-      if (!shipmentDetails || !shipmentDetails.timeline || !shipmentDetails.timeline.some(entry => entry.name.toUpperCase() === checkpoint.toUpperCase())) {
-        event.preventDefault();
-        alert('Account not authorized to update this checkpoint.');
-        return;
-      }
-
       const existingCheckpoint = shipmentDetails.timeline.find(entry => entry.name.toUpperCase() === checkpoint.toUpperCase());
-      if (existingCheckpoint.checkedby !== '-' || !existingCheckpoint.currentHeads === 0) {
-        event.preventDefault();
-        alert(`Checkpoint has already been checked by `+ existingCheckpoint.checkedby +'.');
+      if (existingCheckpoint.checkedby !== '-' || existingCheckpoint.currentHeads !== 0) {
+        alert(`Checkpoint has already been checked by ${existingCheckpoint.checkedby}.`);
         return;
       }
 
       const response = await axios.put(`http://${IP_ADR}:5000/api/shipments/update/${id}`, {
-        inspector: inspector,
+        inspector,
         checkpointName: checkpoint.toUpperCase(),
         currentHeads: heads
       });
 
-      // Assuming the response body has the success status and data
       if (response.status === 200) {
-        setOpenSnackbar(true);  // Show success message
         console.log('Update successful:', response.data);
       } else {
         throw new Error('Failed to update shipment details');
       }
     } catch (error) {
-      event.preventDefault();      
       console.error('Update error:', error);
       alert('Error updating shipment details: ' + error.message);
+    } finally {
+      handleCloseModal();  // Close modal after submit
     }
-};
+  };
 
 
   return (
@@ -137,8 +140,8 @@ function UpdateConfirmation(props) {
               <Divider />
               <p style={{ textAlign: "left", fontWeight: "bold" }}>Authorization</p>
 
-              <InspectorForm onInspectorChange={handleInspectorChange} onHeadChange= {handleHeadChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange} />
-              <Button type="submit" variant="contained" color="primary" fullWidth>
+              <InspectorForm onInspectorChange={handleInspectorChange} onHeadChange={handleHeadChange} checkpointList={shipmentDetails.timeline} onCheckpointChange={handleCheckpointChange} />
+              <Button onClick={handleOpenModal} variant="contained" color="primary" fullWidth>
                 Update              </Button>
             </>
           )}
@@ -152,6 +155,14 @@ function UpdateConfirmation(props) {
               {shipmentDetails ? shipmentDetails.warningMessage : 'Error fetching data.'}
             </Alert>
           </Snackbar>
+          <ConfirmationModal
+            open={modalOpen}
+            handleClose={handleCloseModal}
+            handleConfirm={handleSubmit}  // Passing handleSubmit as the confirmation action
+            title="Confirm Submission"
+          >
+              {`You are about to log ${heads} heads. This action is irreversible. Please confirm your submission.`}
+          </ConfirmationModal>
         </Paper>
       </form>
     </div>

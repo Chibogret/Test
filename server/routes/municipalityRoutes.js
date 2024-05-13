@@ -94,5 +94,58 @@ router.put('/update/:name', async (req, res) => {
   }
 });
 
+router.get('/dashboard', async (req, res) => {
+  try {
+      const totalData = await Municipality.aggregate([
+          {
+              $group: {
+                  _id: null,
+                  totalCheckpoints: { $sum: 1 },
+                  activeCheckpoints: {
+                      $sum: {
+                          $cond: [{ $eq: ["$checkpoint.operationalStatus", "Active"] }, 1, 0]
+                      }
+                  },
+                  inactiveCheckpoints: {
+                      $sum: {
+                          $cond: [{ $eq: ["$checkpoint.operationalStatus", "Inactive"] }, 1, 0]
+                      }
+                  },
+                  underMaintenanceCheckpoints: {
+                      $sum: {
+                          $cond: [{ $eq: ["$checkpoint.operationalStatus", "Under Maintenance"] }, 1, 0]
+                      }
+                  },
+                  noCases: {
+                      $sum: {
+                          $cond: [{ $eq: ["$asfStatus", "No Cases"] }, 1, 0]
+                      }
+                  },
+                  monitoring: {
+                      $sum: {
+                          $cond: [{ $eq: ["$asfStatus", "Monitoring"] }, 1, 0]
+                      }
+                  },
+                  outbreak: {
+                      $sum: {
+                          $cond: [{ $eq: ["$asfStatus", "Outbreak"] }, 1, 0]
+                      }
+                  },
+                  contained: {
+                      $sum: {
+                          $cond: [{ $eq: ["$asfStatus", "Contained"] }, 1, 0]
+                      }
+                  },
+                  totalMovements: { $sum: { $size: "$movementData" } }
+              }
+          }
+      ]);
+
+      res.json(totalData);
+  } catch (error) {
+      res.status(500).send({ message: 'Failed to retrieve data', error: error });
+  }
+});
+
 
 module.exports = router;
