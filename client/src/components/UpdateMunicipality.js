@@ -28,8 +28,8 @@ function UpdateMunicipalityModal({ open, handleClose }) {
     // State for form fields
     const [municipality, setMunicipality] = useState('');
     const [checkpointStatus, setCheckpointStatus] = useState('');
-    const [startTime, setStartTime] = useState('08:00 AM');
-    const [endTime, setEndTime] = useState('05:00 PM');
+    const [startTime, setStartTime] = useState('08:00');
+    const [endTime, setEndTime] = useState('05:00');
 
     const [outbreakStatus, setOutbreakStatus] = useState('');
 
@@ -51,6 +51,40 @@ function UpdateMunicipalityModal({ open, handleClose }) {
         return savedItems ? JSON.parse(savedItems) : [];
     });
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                console.log(municipality)
+                const response = await axios.get(`http://${IP_ADR}:5000/api/municipalities/get/${municipality}`);
+                // setMunicipalityData(response.data);
+                const data = response.data
+                setCheckpointStatus(data.checkpoint.operationalStatus)
+                const times = data.checkpoint.timesOfActivity.split(' - ');
+                if (times.length === 2) {
+                    setStartTime(times[0]);
+                    setEndTime(times[1]);
+                }
+                setOutbreakStatus(data.asfStatus)
+                setVetAuthorityName(data.contactInfo.veterinaryAuthority.name)
+                setVetAuthorityPhone(data.contactInfo.veterinaryAuthority.phoneNumber)
+                setVetAuthorityEmail(data.contactInfo.veterinaryAuthority.email)
+                setEmergencyResponseTeamName(data.contactInfo.emergencyResponseTeam.name)
+                setEmergencyResponseTeamPhone(data.contactInfo.emergencyResponseTeam.phoneNumber)
+                setEmergencyResponseTeamEmail(data.contactInfo.emergencyResponseTeam.email)
+                localStorage.setItem('itemsFromChild', JSON.stringify(response.data.alerts.map(({ _id, date, ...rest }) => rest)));
+                console.log(response.data)
+            } catch (error) {
+                // setMunicipalityData(null);
+                console.error('Error fetching municipality data:', error);
+                // Handle the error accordingly in your UI
+            }
+        };
+
+        if (municipality) {
+            fetchData();
+        }
+    }, [municipality]);
+
     const handleItemsChange = (newItems) => {
         setItemsFromChild(newItems);
     };
@@ -60,7 +94,7 @@ function UpdateMunicipalityModal({ open, handleClose }) {
     }, [itemsFromChild]);
 
     const handleSubmit = async (e) => {
-                // Map the state to the structure of the Municipality schema
+        // Map the state to the structure of the Municipality schema
         const formData = {
             name: municipality,
             checkpoint: {

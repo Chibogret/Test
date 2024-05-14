@@ -8,14 +8,12 @@ const IP_ADR = process.env.REACT_APP_IP_ADR;
 // Replace 'your.server.ip' with the actual IP address
 
 const DashboardPage = () => {
-  const [data, setData] = useState({
-    shipments: { activeCount: 0, completedToday: 0, recent: [] },
-    users: { total: 0, activeToday: 0 },
-    municipalities: [],
-    alerts: []
-  });
+  const [shipments, setShipments] = useState(null)
   const [users, setUser] = useState(null)
   const [shipment_overview, setOverview] = useState(null)
+  const [municipalities_overview, setMunicipality] = useState(null)
+  const [alerts, setAlerts] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,6 +29,7 @@ const DashboardPage = () => {
         // Fetch shipments data
         const shipmentResponse = await axios.get(`http://${IP_ADR}:5000/api/shipments/latest`);
         const shipmentOverview = await axios.get(`http://${IP_ADR}:5000/api/shipments/dashboard-overview`);
+        const alerts = await axios.get(`http://${IP_ADR}:5000/api/municipalities/alerts`);
         const usersResponse = await axios.get(`http://${IP_ADR}:5000/api/user/userinfo`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -40,25 +39,23 @@ const DashboardPage = () => {
         const municipalityResponse = await axios.get(`http://${IP_ADR}:5000/api/municipalities/dashboard`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        const currentUser = await axios.get(`http://${IP_ADR}:5000/api/user/userinfo`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+        console.log(alerts.data)
         console.log(municipalityResponse.data)
         console.log(listOfUsers.data)
         console.log(usersResponse.data)
         console.log(shipmentOverview.data)
         console.log(shipmentResponse.data)
-        const shipmentsData = shipmentResponse.data; // Adjust this if the data structure is different
+        console.log(currentUser.data)
+        setShipments(shipmentResponse.data)
         setUser(listOfUsers.data)
         setOverview(shipmentOverview.data)
-        // Assuming you also have endpoints to fetch users, municipalities, and alerts
-        // const usersResponse = await axios.get(`http://${IP_ADR}:5000/api/users/get`);
-        // const municipalitiesResponse = await axios.get(`http://${IP_ADR}:5000/api/municipalities/get`);
-        // const alertsResponse = await axios.get(`http://${IP_ADR}:5000/api/alerts/get`);
-
-        setData({
-          shipments: shipmentsData, // Adjust according to your response structure
-          users: { total: 10, activeToday: 5 }, // Mock data or another API call
-          municipalities: [{ name: 'Calapan', asfStatus: 'Monitoring' }], // Mock data or another API call
-          alerts: [{ message: 'New ASF Case Detected', severity: 'High', date: new Date() }] // Mock data or another API call
-        });
+        setMunicipality(municipalityResponse.data[0])
+        setCurrentUser(currentUser.data)
+        setAlerts(alerts.data)
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch data. ' + err.message);
@@ -92,7 +89,7 @@ const DashboardPage = () => {
         <Navbar />
       </div>
       <div style={{ display: "flex", overflow: "auto" }}>
-        <Dashboard shipments={data.shipments} overview={shipment_overview} users={users} municipalities={data.municipalities} alerts={data.alerts} />
+        <Dashboard shipments={shipments} overview={shipment_overview} users={users} municipalities={municipalities_overview} alerts={alerts} currentUser={currentUser}/>
 
       </div>
     </div>

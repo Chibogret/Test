@@ -148,4 +148,24 @@ router.get('/dashboard', async (req, res) => {
 });
 
 
+router.get('/alerts', async (req, res) => {
+    try {
+        const municipalities = await Municipality.find({}, 'name alerts');
+
+        const alerts = municipalities.reduce((acc, municipality) => {
+            return acc.concat(municipality.alerts.map(alert => ({
+                municipality: municipality.name,
+                severity: alert.severity,
+                message: alert.message
+            })));
+        }, []);
+
+        res.json(alerts);
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
 module.exports = router;
