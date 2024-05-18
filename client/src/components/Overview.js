@@ -53,7 +53,7 @@ const toTitleCase = (str) => {
   return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
 
-const Dashboard = ({ shipments, users, overview, municipalities, alerts, currentUser }) => {
+const Dashboard = ({ shipments, users, overview, municipalities, alerts, currentUser, warnings }) => {
   const recentShipments = shipments
 
   const data = [
@@ -61,33 +61,34 @@ const Dashboard = ({ shipments, users, overview, municipalities, alerts, current
     { id: 1, value: overview.completedShipments, label: 'Completed' },
     { id: 2, value: overview.totalShipments - overview.activeShipments - overview.completedShipments, label: 'Pending' },
   ]
+
   return (
     <Box style={{ maxWidth: "95%", margin: "5px auto", height: "auto" }}>
       <Typography variant="h2" gutterBottom style={{ color: "#008080" }}>
         Overview
       </Typography>
       <Grid container spacing={3}>
-      <Grid item xs={12} sm={6} md={9} gap={6}>
-      <Card>
-      <CardContent>
-                <Typography variant="h5" component="div">
-                    User Information
-                </Typography>
-                <Typography>
-                <Box component="span" fontWeight="fontWeightMedium" style={{fontWeight: "bold"}}> Email:</Box> {currentUser.email}
-                </Typography>
-                <Typography>
-                <Box component="span" fontWeight="fontWeightMedium" style={{fontWeight: "bold"}}> First Name:</Box> {toTitleCase(currentUser.firstName)}
-                </Typography>
-                <Typography>
-                <Box component="span" fontWeight="fontWeightMedium" style={{fontWeight: "bold"}}> Last Name:</Box> {toTitleCase(currentUser.lastName)}
-                </Typography>
-                <Typography>
-                <Box component="span" fontWeight="fontWeightMedium" style={{fontWeight: "bold"}}> Municipality Assigned:</Box> {toTitleCase(currentUser.municipality)}
-                </Typography>
+        <Grid item xs={12} sm={6} md={9} gap={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                User Information
+              </Typography>
+              <Typography>
+                <Box component="span" fontWeight="fontWeightMedium" style={{ fontWeight: "bold" }}> Email:</Box> {currentUser.email}
+              </Typography>
+              <Typography>
+                <Box component="span" fontWeight="fontWeightMedium" style={{ fontWeight: "bold" }}> First Name:</Box> {toTitleCase(currentUser.firstName)}
+              </Typography>
+              <Typography>
+                <Box component="span" fontWeight="fontWeightMedium" style={{ fontWeight: "bold" }}> Last Name:</Box> {toTitleCase(currentUser.lastName)}
+              </Typography>
+              <Typography>
+                <Box component="span" fontWeight="fontWeightMedium" style={{ fontWeight: "bold" }}> Municipality Assigned:</Box> {toTitleCase(currentUser.municipality)}
+              </Typography>
 
             </CardContent>
-        </Card>
+          </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3} gap={6}>
           <Card>
@@ -111,46 +112,49 @@ const Dashboard = ({ shipments, users, overview, municipalities, alerts, current
           </Card>
         </Grid>
         <Grid item xs={12} sm={12} md={6} gap="6">
-        <Card sx={{ bgcolor: 'background.paper', height: "100%"}}>
-  <CardContent>
-    {[
-      { label: "Monitoring", value: municipalities.monitoring },
-      { label: "No Cases", value: municipalities.noCases },
-      { label: "Contained", value: municipalities.contained },
-      { label: "Outbreak", value: municipalities.outbreak },
-    ].map((item, index) => (
-      <Box
-        key={index}
-        display="flex"
-        alignItems="center"
-        gap={1}
-        sx={{
-          bgcolor: item.label === "Outbreak" && item.value !== 0 ? 'error.main' : 'background.default',
-          color: item.label === "Outbreak" && item.value !== 0 ? 'error.contrastText' : 'text.primary',
-          p: 1,
-          borderRadius: 1
-        }}
-      >
-        <Typography variant="h6" sx={{ color: item.label === "Outbreak" && item.value !== 0 ? 'error.contrastText' : 'text.primary' }}>
-          {item.label}
-        </Typography>
-        <Typography variant="h6" sx={{ ml: 'auto', color: item.label === "Outbreak" && item.value !== 0 ? 'error.contrastText' : 'secondary.main' }}>
-          {item.value}
-        </Typography>
-      </Box>
-    ))}
-  </CardContent>
-</Card>
+          <Card sx={{ bgcolor: 'background.paper', height: "100%" }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Municipality Status
+              </Typography>
+              {[
+                { label: "Monitoring", value: municipalities.monitoring },
+                { label: "No Cases", value: municipalities.noCases },
+                { label: "Contained", value: municipalities.contained },
+                { label: "Outbreak", value: municipalities.outbreak },
+              ].map((item, index) => (
+                <Box
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  sx={{
+                    bgcolor: item.label === "Outbreak" && item.value !== 0 ? 'error.main' : 'background.default',
+                    color: item.label === "Outbreak" && item.value !== 0 ? 'error.contrastText' : 'text.primary',
+                    p: 1,
+                    borderRadius: 1
+                  }}
+                >
+                  <Typography variant="h6" sx={{ color: item.label === "Outbreak" && item.value !== 0 ? 'error.contrastText' : 'text.primary' }}>
+                    {item.label}
+                  </Typography>
+                  <Typography variant="h6" sx={{ ml: 'auto', color: item.label === "Outbreak" && item.value !== 0 ? 'error.contrastText' : 'secondary.main' }}>
+                    {item.value}
+                  </Typography>
+                </Box>
+              ))}
+            </CardContent>
+          </Card>
 
 
 
 
         </Grid>
-        <Grid item xs={12} sm={12} md={3} gap={6}>
-          <Card sx={{ bgcolor: 'background.paper', height: "100%" }}>
-            <CardContent>
+        <Grid item xs={12} sm={12} md={3} gap={6} >
+          <Card sx={{ bgcolor: 'background.paper' }} style={{ height: "100%", margin: "0 auto" }}>
+            <CardContent display="flex" alignItems="center" justifyContent="center" height="100%" >
 
-              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{ flexGrow: 1 }}>
+              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{ flexGrow: 1 }}  >
                 <PetsIcon sx={{ fontSize: 40 }} />
                 <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
                   Total Delivered
@@ -197,59 +201,129 @@ const Dashboard = ({ shipments, users, overview, municipalities, alerts, current
                   {overview.totalShipments}
                 </Typography>
               </Box>
-              
-              <Box display="flex"  gap={1}>
-                <Typography variant="subtitle1" color="text.secondary" style={{margin: "0 auto"}} >
-                Average Time of Delivery 
-                <Typography variant="subtitle2" color="text.secondary">
 
-                {convertDecimalTimeToDayTime(overview.averageDeliveryTime)}
+              <Box display="flex" gap={1}>
+                <Typography variant="subtitle1" color="text.secondary" style={{ margin: "0 auto" }} >
+                  Average Time of Delivery
+                  <Typography variant="subtitle2" color="text.secondary">
+
+                    {convertDecimalTimeToDayTime(overview.averageDeliveryTime)}
+                  </Typography>
                 </Typography>
-                </Typography>
-                
+
               </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={12} md={12} gap={6} >
-        <Card style={{maxHeight: "400px", overflow: "auto"}}>
+          <Card style={{ maxHeight: "400px", overflow: "auto" }}>
             <CardContent>
+              <Typography variant="h5" component="div" gutterBottom>
+                Municipality Alerts
+              </Typography>
+              {alerts.map((alert, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    marginTop: 1,
+                    padding: 1,
+                    borderBottom: '1px solid #ddd',
+                    backgroundColor: alert.severity === 'Critical' ? 'rgba(255, 0, 0, 0.1)' : 'inherit',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Typography variant="subtitle2" sx={{ flex: 1, color: 'textSecondary' }}>
+                    {alert.municipality}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      flex: 1,
+                      color: alert.severity === 'Critical' ? 'red' : 'textPrimary',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {alert.severity}
+                  </Typography>
+                  <Typography variant="body2" sx={{ flex: 2 }}>
+                    {alert.message}
+                  </Typography>
+                </Box>
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} gap={6} >
+          <Card style={{ maxHeight: "400px", overflow: "auto" }}>
+          <CardContent>
                 <Typography variant="h5" component="div" gutterBottom>
-                    Municipality Alerts
+                    Shipment Alerts
                 </Typography>
-                {alerts.map((alert, index) => (
-                    <Box 
-                        key={index} 
-                        sx={{ 
-                            marginTop: 1, 
-                            padding: 1, 
-                            borderBottom: '1px solid #ddd', 
-                            backgroundColor: alert.severity === 'Critical' ? 'rgba(255, 0, 0, 0.1)' : 'inherit',
+                {/* Header Row */}
+                <Box
+                    sx={{
+                        marginTop: 1,
+                        padding: 1,
+                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        borderRadius: "5px"
+                    }}
+                >
+                    <Typography variant="subtitle2" sx={{ flex: 2, color: 'textSecondary' }}>
+                        ID
+                    </Typography>
+                    <Typography variant="subtitle2" sx={{ flex: 2, color: 'textSecondary' }}>
+                        Warning
+                    </Typography>
+                    <Typography variant="subtitle2" sx={{ flex: 2, color: 'textSecondary' }}>
+                        Livestock Handler
+                    </Typography>
+                    <Typography variant="subtitle2" sx={{ flex: 2, color: 'textSecondary' }}>
+                        Origin
+                    </Typography>
+                    <Typography variant="subtitle2" sx={{ flex: 2, color: 'textSecondary' }}>
+                        Destination
+                    </Typography>
+                </Box>
+                {/* Warning Rows */}
+                {warnings.map((warning, index) => (
+                    <Box
+                        key={index}
+                        sx={{
+                            marginTop: 1,
+                            padding: 1,
+                            backgroundColor: warning.warning > 5 ? 'rgba(255, 0, 0, 0.1)' : 'inherit',
                             display: 'flex',
                             justifyContent: 'space-between',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            borderRadius: "5px",
+                            cursor: 'pointer'
                         }}
+                        onDoubleClick={() => window.location.href = `/home/${warning._id}`}
                     >
-                        <Typography variant="subtitle2" sx={{ flex: 1, color: 'textSecondary' }}>
-                            {alert.municipality}
-                        </Typography>
-                        <Typography 
-                            variant="body2" 
-                            sx={{ 
-                                flex: 1, 
-                                color: alert.severity === 'Critical' ? 'red' : 'textPrimary',
-                                textAlign: 'center'
-                            }}
-                        >
-                            {alert.severity}
+                        <Typography variant="subtitle2" sx={{ flex: 2, color: 'textSecondary' }}>
+                            {warning._id}
                         </Typography>
                         <Typography variant="body2" sx={{ flex: 2 }}>
-                            {alert.message}
+                            {warning.warning}
+                        </Typography>
+                        <Typography variant="body2" sx={{ flex: 2 }}>
+                            {warning.livestockHandlerName}
+                        </Typography>
+                        <Typography variant="body2" sx={{ flex: 2 }}>
+                            {warning.origin}
+                        </Typography>
+                        <Typography variant="body2" sx={{ flex: 2 }}>
+                            {warning.destination}
                         </Typography>
                     </Box>
                 ))}
             </CardContent>
-        </Card>
+          </Card>
         </Grid>
 
 

@@ -80,6 +80,7 @@ const fetchData = async () => {
             key={index} 
             variant="outlined" 
             onClick={() => handleSelectShipment(orderDetails._id)}
+            style={{border: "none", borderBottom: "1px solid black"}}
           >
             <CardActionArea>
               <CardContent>

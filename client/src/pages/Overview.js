@@ -16,6 +16,8 @@ const DashboardPage = () => {
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [warnings, setWarning] = useState(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +44,8 @@ const DashboardPage = () => {
         const currentUser = await axios.get(`http://${IP_ADR}:5000/api/user/userinfo`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+        const warnings = await axios.get(`http://${IP_ADR}:5000/api/shipments/warning`);
+        console.log(warnings.data)
 
         console.log(alerts.data)
         console.log(municipalityResponse.data)
@@ -56,6 +60,7 @@ const DashboardPage = () => {
         setMunicipality(municipalityResponse.data[0])
         setCurrentUser(currentUser.data)
         setAlerts(alerts.data)
+        setWarning(warnings.data)
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch data. ' + err.message);
@@ -89,7 +94,7 @@ const DashboardPage = () => {
         <Navbar />
       </div>
       <div style={{ display: "flex", overflow: "auto" }}>
-        <Dashboard shipments={shipments} overview={shipment_overview} users={users} municipalities={municipalities_overview} alerts={alerts} currentUser={currentUser}/>
+        <Dashboard shipments={shipments} overview={shipment_overview} users={users} municipalities={municipalities_overview} alerts={alerts} currentUser={currentUser} warnings={warnings}/>
 
       </div>
     </div>

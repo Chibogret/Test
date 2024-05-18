@@ -125,7 +125,7 @@ const DetailsComponent = ({ orderDetails }) => {
         </div>
 
         <div className='warning-section' style={{ height: "100%" }}>
-          <WarningSection details={orderDetails} />
+          <WarningSection details={orderDetails} _id={_id}/>
         </div>
       </div>
 

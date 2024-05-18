@@ -386,6 +386,49 @@ router.get('/dashboard-overview', async (req, res) => {
   }
 });
 
+router.get('/warning', async (req, res) => {
+  try {
+    const shipments = await ShipmentTracking.find(
+      { 
+        warning: { $gt: 0 },
+        'deliveryStatus': {
+          $elemMatch: { 
+            state: 'delivered',
+            date: { $eq: '-' }
+          }
+        }
+      },
+      '_id livestockHandlerName origin destination warning'
+    );
+    res.json(shipments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
+
+
+
+// Route to update the warning field
+router.put('/warning/:id', async (req, res) => {
+  const shipmentId = req.params.id;
+  const { warning } = req.body;
+
+  try {
+    const shipment = await ShipmentTracking.findByIdAndUpdate(
+      shipmentId,
+      { warning },
+      { new: true, runValidators: true }
+    );
+
+    if (!shipment) {
+      return res.status(404).json({ message: 'Shipment not found' });
+    }
+
+    res.json(shipment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;

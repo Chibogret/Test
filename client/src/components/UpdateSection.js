@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Snackbar, Alert, Button, Paper, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
+
 import InspectorForm from './InspectorForm';
 import '../style/updateconfirmation.css';
 
@@ -15,6 +17,7 @@ function UpdateConfirmation(props) {
   const [inspector, setInspector] = useState('');
   const [heads, setHead] = useState('');
   const [checkpoint, setCheckpoint] = useState('');
+  const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -67,22 +70,22 @@ function UpdateConfirmation(props) {
     if (!checkpoint || checkpoint.trim() === '') {
       alert('Checkpoint is required');
       return;
-    }
-    try {
+    }try {
       const existingCheckpoint = shipmentDetails.timeline.find(entry => entry.name.toUpperCase() === checkpoint.toUpperCase());
       if (existingCheckpoint.checkedby !== '-' || existingCheckpoint.currentHeads !== 0) {
         alert(`Checkpoint has already been checked by ${existingCheckpoint.checkedby}.`);
         return;
       }
-
+  
       const response = await axios.put(`http://${IP_ADR}:5000/api/shipments/update/${id}`, {
         inspector,
         checkpointName: checkpoint.toUpperCase(),
         currentHeads: heads
       });
-
+  
       if (response.status === 200) {
         console.log('Update successful:', response.data);
+        navigate(`/home/${id}`);  // Navigate to home/id after success
       } else {
         throw new Error('Failed to update shipment details');
       }

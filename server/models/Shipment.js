@@ -22,7 +22,8 @@ const ShipmentSchema = new mongoose.Schema({
     checkedby: { type: String, required: true },
     currentHeads: { type: Number, required: true }
   }],
-  issuedBy: { type: String, required: true }
+  issuedBy: { type: String, required: true },
+  warning: {type: Number, required: false}
   // Add other relevant fields as needed
 });
 
