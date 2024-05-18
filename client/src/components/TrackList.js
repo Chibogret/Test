@@ -59,14 +59,19 @@ const fetchData = async () => {
 
   return (
     <div className='sidebar' style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
+      
+      {/* User Registration Buttons */}
+      <Divider>Administrator</Divider>
       <Button className="registerButton" onClick={handleUserOpen}>Register User</Button>
       <Button className="registerButton" onClick={handleOpen}>Register Shipment</Button>
       <Button className="registerButton" onClick={handleMunicipalityOpen}>Update Municipality</Button>
+  
+      {/* Modals */}
       <RegisterUserForm openU={openU} handleUserClose={handleUserClose} />
       <ShipmentModal open={open} handleClose={handleClose} />
       <UpdateMunicipalityModal open={openM} handleClose={handleMunicipalityClose} />
-      <Divider/>
-      <Button className="registerButton" disabled style={{ color: "black", border:"none"}}>Tracking shipment</Button>
+  
+      <Divider>Tracking</Divider>
       <TextField
         label="Search Shipments"
         variant="outlined"
@@ -74,6 +79,7 @@ const fetchData = async () => {
         className="searchBar"
         style={{ marginBottom: '10px' }}
       />
+  
       <div style={{ height: '100%', overflowY: 'auto' }}>
         {orderDetailsList.map((orderDetails, index) => (
           <Card 
@@ -97,5 +103,7 @@ const fetchData = async () => {
       </div>
     </div>
   );
+  
+  
 }     
 export default Tracklist;
