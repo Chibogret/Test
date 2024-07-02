@@ -1,47 +1,24 @@
+// src/App.js
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './auth/AuthProvider';
-import ProtectedRoute from './auth/ProtectedRoute';
-import UserProfile from './pages/UserProfile';
-import LoginForm from './components/LoginForm';
-import FormContainer from './pages/FormContainer';
-import UpdateConfirmation from './pages/UpdateDetails'; // Import the new UpdatePage component
-import theme from './style/theme';
-import './styles.css';
-import './App.css';
-import DashboardPage from './pages/Overview';
+import CssBaseline from '@mui/material/CssBaseline';
+import HomePage from './pages/Nadeline_Home';
+import theme from './theme'; // Import the theme
 
 function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider theme={theme}>
-        <Router>
-          <div className="App">
-            <Routes>
-              <Route path="/" element={<FormContainer />} />
-              <Route path="/home/:id?" element={
-                <ProtectedRoute>
-                  <UserProfile />
-                </ProtectedRoute>
-              } />
-              <Route path="/update/:id" element={
-                <ProtectedRoute>
-                  <UpdateConfirmation />
-                </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              } />
-
-              {/* You can add more routes here */}
-            </Routes>
-          </div>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            {/* You can add more routes here */}
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

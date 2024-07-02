@@ -1,12 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const shipmentRoutes = require('./routes/shipmentRoutes') // Import the shipment routes
+const messageRoutes = require('./routes/messages');
+const bucketListRoutes = require('./routes/bucketList');
+const questionsRouter = require('./routes/questions');
 const cors = require('cors');
 const path = require('path');
-const municipalitiesRoutes = require('./routes/municipalityRoutes');
 
 const app = express();
 
@@ -15,19 +14,13 @@ connectDB();
 
 app.use(cors());
 
+
 // Middleware for parsing JSON bodies
 app.use(express.json());
+app.use('/api/messages', messageRoutes);
+app.use('/api/bucketlist', bucketListRoutes);
+app.use('/questions', questionsRouter);
 
-// Use the Auth Routes
-app.use('/api/auth', authRoutes);
-
-app.use('/api/municipalities', municipalitiesRoutes)
-
-// Use the User Routes
-app.use('/api/user', userRoutes); // Update this to include '/users' to differentiate from other routes
-
-// Use the Shipment Routes
-app.use('/api/shipments', shipmentRoutes);
 
 const PORT = process.env.PORT || 5000;
 

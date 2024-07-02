@@ -1,47 +1,29 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, useMediaQuery } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu'; // Import MenuIcon
-import HomeIcon from '@mui/icons-material/Home'; // Import HomeIcon
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 
-import { useLocation, Link } from 'react-router-dom'; // Import useLocation and Link
-
-function Navbar() {
-    const location = useLocation(); // Hook to get location object
-
-    const isHome = location.pathname.startsWith('/home');
-
-    // Function to toggle sidebar
-    const toggleSidebar = () => {
-        document.querySelector('.home-tracklist').classList.toggle('active');
-    };
-
-    return (
-        <AppBar position="fixed" className='app-bar'>
-            <Toolbar>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    <div className='hide-tracklist' style={{ display: 'flex', alignItems: 'center' }}>
-                        {isHome ? (
-                            <IconButton onClick={toggleSidebar} aria-label="toggle sidebar">
-                                <MenuIcon sx={{ color: 'white' }} />
-                            </IconButton>
-                        ) : (
-                            <div style={{ display: 'flex', justifyContent: 'flex-start' }}> {/* This ensures the link button aligns to the left */}
-                                <Link to="/home" style={{ color: 'inherit' }}>
-                                    <IconButton aria-label="home">
-                                        <HomeIcon sx={{ color: 'white' }} />
-                                    </IconButton>
-                                </Link>
-                            </div>
-                        )}
-                    </div>
-                </Typography>
-                {location.pathname !== '/dashboard' && (
-
-                <Button color="inherit" href="/dashboard">Go to Dashboard</Button>
-                )}
-            </Toolbar>
-        </AppBar>
-    );
-}
+const Navbar = () => {
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "white" }}>
+          Nade and Me
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton edge="end" color="inherit">
+            <Avatar alt="Deinyel" src={`${process.env.PUBLIC_URL}/dein.png`} />
+          </IconButton>
+          <IconButton edge="end" color="inherit">
+            <Avatar alt="Nade" src={`${process.env.PUBLIC_URL}/nade.png`} />
+          </IconButton>
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
 
 export default Navbar;
